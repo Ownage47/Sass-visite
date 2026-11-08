@@ -66,7 +66,7 @@ textarea{resize:vertical;min-height:60px}
 .mt button{flex:1;padding:12px;border-radius:8px;border:1px solid var(--ln);background:var(--pn2);color:var(--mu);font:inherit;font-weight:700}
 .mt button.on{background:var(--gold);color:#111}
 .paper{--ac:#14181f}.paper h2,.paper .hd{border-color:var(--ac)}.paper h2,.paper .sub{color:var(--ac)}
-.paper.nog .gen,.paper.noa .sig{display:none}
+.paper.nog .gen,.paper.noa .sig,.paper.noa .eng{display:none}.paper .eng{margin-top:22px;padding:8px 10px;border:1px solid var(--ac);font:12px/1.5 Arial,sans-serif}
 @media(max-width:980px){.mt{display:flex}body:not(.vp) .prev{display:none}body.vp .form{display:none}.app{padding:12px 12px 84px}.prev{position:static}.paper{max-height:none;padding:24px 18px}.paper .cls{margin:-24px -18px 18px}.bar{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}.bar .btn{flex:1 1 45%}}
 @media(max-width:520px){.g2{grid-template-columns:1fr}.lv button{font-size:10px}header{padding:10px 14px}.paper table td:first-child{width:38%}}
 .chk{position:sticky;top:0;z-index:4;background:var(--bg);padding:6px 0 10px}
@@ -131,6 +131,7 @@ textarea{resize:vertical;min-height:60px}
       <label class="f">Matricule / Grade<input id="mat" placeholder="Ex : SA-014 · Spécial"></label>
       <label class="f">Effectif du détail (agents)<input id="nbag" type="number" min="1" value="4"></label>
       <label class="f">Contact SASS (24/7)<input id="sc" placeholder="Ex : 555-0100"></label>
+      <label class="f full">Autorité signataire du SASS (accord et signature)<input id="auth" placeholder="Ex : Directeur du SASS — Nom (par défaut : l'agent responsable)"></label>
       <label class="f full">Canal radio / PC opérationnel<input id="rad" placeholder="Ex : Canal 3 · PC : bureau du gérant"></label>
     </div>
   </div>
@@ -288,6 +289,7 @@ function fill(t){
 }
 
 /* ---------- document ---------- */
+function sgs(){return $('auth').value.trim()||(val('agent','[Agent]')+($('mat').value?' · '+$('mat').value:'')+($('sgt').value?' · '+$('sgt').value:''))}
 function pname(p){const c=p.c||'—';return p.h?'« '+c+' »':(p.n||'[Nom]')+(p.f?' — '+p.f:'')+(p.c?' (« '+c+' »)':'')}
 function build(){
   const L=LV[S.lvl],pp=S.pp,multi=pp.length>1,nm=pp.map(p=>p.h?'« '+(p.c||'—')+' »':(p.n||'[Nom]')),nl=multi?nm.slice(0,-1).join(', ')+' et '+nm[nm.length-1]:nm[0];
@@ -303,6 +305,7 @@ function build(){
     ['Émis par',val('agent','[Agent]')+($('mat').value?' · '+$('mat').value:'')+' — Détail de '+val('nbag','?')+' agent(s)']
   ];
   if($('piece').value)rows.splice(2,0,['Zone concernée',$('piece').value]);
+  rows.push(['Accord / signature SASS',sgs()]);
   if($('sc').value)rows.push(['Contact SASS (24/7)',$('sc').value]);
   if($('vld').value)rows.push(['Validité',$('vld').value]);
   const arts=[];let n=0;
@@ -333,7 +336,8 @@ function render(){
   d.arts.forEach(a=>{h+=`<div class="sub">${a.cn}</div>`+a.items.map(i=>`<p class="art"><b>Art. ${i.n} — ${esc(i.t)}.</b> ${esc(i.x)}</p>`).join('')});
   h+=`<div class="gen"><h2>3 · Dispositions générales</h2>`+d.gen.map((g,i)=>`<p class="art"><b>3.${i+1}</b> ${g}</p>`).join('')+'</div>';
   if(d.extra)h+=`<h2>4 · Instructions complémentaires</h2><p>${esc(d.extra).replace(/\n/g,'<br>')}</p>`;
-  h+=`<div class="sig"><div>Pour le SASS<br><small>${esc(val('agent','[Agent]'))}${$('sgt').value?' · '+esc($('sgt').value):''}</small></div><div>Accusé de réception — le propriétaire<br><small>${esc(val('prop','[Propriétaire]'))} · Date / signature</small></div></div>
+  h+=`<div class="eng"><b>ENGAGEMENT DU DESTINATAIRE.</b> En apposant sa signature ci-dessous, ${esc(val('prop','[Propriétaire]'))} s'engage à respecter l'intégralité de la présente directive ainsi que les ordres donnés par les agents du SASS pendant toute la durée de la visite. Cette signature est <b>irrévocable</b> : elle ne peut être ni annulée, ni retirée, ni contestée après avoir été apposée.</div>
+  <div class="sig"><div>Pour le SASS — accord et signature<br><small>${esc(sgs())}</small></div><div>Lu, approuvé et accepté — le destinataire<br><small>${esc(val('prop','[Propriétaire]'))} · Nom, qualité, date et signature</small></div></div>
   <div class="ft">${d.L[1]} — Document destiné exclusivement à son destinataire. Toute reproduction ou divulgation non autorisée est interdite.<br>San Andreas Secret Service · ${esc(S.ref)}</div>`;
   $('doc').innerHTML=h.replace(/\[([^\]<]+)\]/g,'<mark class="ph">[$1]</mark>');save();chk();
   $('cnt').textContent=S.sel.size+' / '+M.length+' sélectionnées';
@@ -346,6 +350,7 @@ function toText(){
   d.arts.forEach(a=>{l.push('',`— ${a.cn.toUpperCase()} —`);a.items.forEach(i=>l.push(`Art. ${i.n} — ${i.t}. ${i.x}`))});
   if($('tgg').checked){l.push('','DISPOSITIONS GÉNÉRALES');d.gen.forEach((g,i)=>l.push(`3.${i+1} ${g}`))}
   if(d.extra)l.push('','INSTRUCTIONS COMPLÉMENTAIRES',d.extra);
+  if($('tga').checked)l.push('','ENGAGEMENT DU DESTINATAIRE','En signant, '+val('prop','[Propriétaire]')+' s\'engage à respecter la présente directive et les ordres des agents du SASS pendant toute la visite. Cette signature est irrévocable : elle ne peut être ni annulée, ni retirée, ni contestée.','Accord et signature SASS : '+sgs());
   l.push('','Merci de confirmer la réception de cette directive.',`— ${val('agent','[Agent]')}, SASS`);
   return l.join('\n');
 }
