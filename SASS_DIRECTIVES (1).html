@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SASS — Directives de sécurité</title>
+<style>
+:root{--bg:#090d16;--pn:#111827;--pn2:#161f31;--ln:#222e45;--gold:#c9a84c;--tx:#e6eaf2;--mu:#8793a8;--red:#e5484d;--ok:#4cc9a0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 'Segoe UI',system-ui,sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--ln);background:linear-gradient(90deg,#0d1424,#090d16)}
+.logo{width:40px;height:40px;border:2px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold);font-weight:800;font-size:12px;letter-spacing:1px}
+header h1{margin:0;font-size:16px;letter-spacing:2px;color:var(--gold)}
+header small{color:var(--mu)}
+.app{display:grid;grid-template-columns:minmax(340px,480px) 1fr;gap:18px;padding:18px 22px;max-width:1500px;margin:auto}
+@media(max-width:980px){.app{grid-template-columns:1fr}}
+.card{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.card h2{margin:0 0 10px;font-size:12px;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label.f{display:block;font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+input,select,textarea{width:100%;margin-top:3px;background:var(--pn2);border:1px solid var(--ln);color:var(--tx);border-radius:6px;padding:8px 10px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
+textarea{resize:vertical;min-height:60px}
+.full{grid-column:1/-1}
+.lv{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.lv button{background:var(--pn2);border:1px solid var(--ln);color:var(--mu);padding:9px 4px;border-radius:6px;cursor:pointer;font:inherit;font-size:11px;font-weight:700;letter-spacing:1px}
+.lv button b{display:block;font-size:16px}
+.lv button.on{color:#fff;border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c);background:color-mix(in srgb,var(--c) 18%,var(--pn2))}
+.cat{margin-top:12px}
+.cat h3{margin:0 0 6px;font-size:12px;color:var(--tx);display:flex;justify-content:space-between}
+.cat h3 span{color:var(--mu);font-weight:400;cursor:pointer;font-size:11px}
+.m{display:flex;gap:9px;align-items:flex-start;padding:7px 9px;border:1px solid var(--ln);border-radius:6px;margin-bottom:5px;cursor:pointer;background:var(--pn2);transition:.12s}
+.m:hover{border-color:#34456a}
+.m.on{border-color:var(--gold);background:#1b2133}
+.m input{width:auto;margin:3px 0 0}
+.m div{flex:1;font-size:13px}
+.m em{font-style:normal;font-size:10px;color:var(--mu);border:1px solid var(--ln);border-radius:4px;padding:0 5px;white-space:nowrap}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{background:var(--gold);color:#111;border:0;border-radius:6px;padding:9px 14px;font-weight:700;cursor:pointer;font:inherit;font-weight:700}
+.btn.s{background:var(--pn2);color:var(--tx);border:1px solid var(--ln)}
+.btn.d{background:#5865f2;color:#fff}
+.btn:hover{filter:brightness(1.12)}
+.prev{position:sticky;top:12px;align-self:start}
+.paper{background:#fff;color:#14181f;border-radius:6px;padding:34px 40px;font:13px/1.55 Georgia,'Times New Roman',serif;max-height:calc(100vh - 150px);overflow:auto}
+.paper .cls{text-align:center;font:700 12px/1 Arial,sans-serif;letter-spacing:3px;padding:6px;color:#fff;margin:-34px -40px 22px}
+.paper .hd{text-align:center;border-bottom:2px solid #14181f;padding-bottom:12px;margin-bottom:14px}
+.paper .hd h1{margin:0;font-size:19px;letter-spacing:3px}
+.paper .hd p{margin:2px 0 0;font:11px Arial,sans-serif;color:#555;letter-spacing:1px}
+.paper h2{font:700 13px Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid #bbb;padding-bottom:3px;margin:20px 0 8px}
+.paper table{width:100%;border-collapse:collapse;font:12px Arial,sans-serif}
+.paper td{border:1px solid #bbb;padding:5px 8px;vertical-align:top}
+.paper td:first-child{width:32%;background:#f1f1f1;font-weight:700}
+.paper .art{margin:0 0 8px;padding-left:2px}
+.paper .art b{font-family:Arial,sans-serif;font-size:12px}
+.paper .sub{font:700 11px Arial,sans-serif;color:#555;margin:12px 0 4px;text-transform:uppercase}
+.paper .sig{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:26px;font:12px Arial,sans-serif}
+.paper .sig div{border-top:1px solid #14181f;padding-top:4px;min-height:60px}
+.paper .ft{margin-top:22px;font:10px Arial,sans-serif;color:#666;text-align:center;border-top:1px solid #ccc;padding-top:8px}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--pn);border:1px solid var(--gold);padding:10px 16px;border-radius:8px;opacity:0;transition:.25s;pointer-events:none}
+.toast.on{opacity:1}
+.card h2{cursor:pointer;user-select:none}.card h2::after{content:'▾';float:right;color:var(--mu)}.card.col h2::after{content:'▸'}.card.col>*:not(h2){display:none}
+.pp{border:1px solid var(--ln);border-radius:8px;padding:10px;margin-bottom:10px;background:#0f1626}
+.pt{display:flex;gap:8px;align-items:center;margin-bottom:8px}.pt b{color:var(--gold)}.pt select{margin:0;flex:1}
+.x{background:none;border:1px solid var(--ln);color:var(--red);border-radius:6px;cursor:pointer;padding:6px 10px}
+.mt{display:none;position:fixed;bottom:0;left:0;right:0;background:#0d1424;border-top:1px solid var(--ln);z-index:9;padding:8px;gap:8px}
+.mt button{flex:1;padding:12px;border-radius:8px;border:1px solid var(--ln);background:var(--pn2);color:var(--mu);font:inherit;font-weight:700}
+.mt button.on{background:var(--gold);color:#111}
+.paper{--ac:#14181f}.paper h2,.paper .hd{border-color:var(--ac)}.paper h2,.paper .sub{color:var(--ac)}
+.paper.nog .gen,.paper.noa .sig{display:none}
+@media(max-width:980px){.mt{display:flex}body:not(.vp) .prev{display:none}body.vp .form{display:none}.app{padding:12px 12px 84px}.prev{position:static}.paper{max-height:none;padding:24px 18px}.paper .cls{margin:-24px -18px 18px}.bar{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}.bar .btn{flex:1 1 45%}}
+@media(max-width:520px){.g2{grid-template-columns:1fr}.lv button{font-size:10px}header{padding:10px 14px}.paper table td:first-child{width:38%}}
+.chk{position:sticky;top:0;z-index:4;background:var(--bg);padding:6px 0 10px}
+.bar2{height:5px;background:var(--ln);border-radius:4px;overflow:hidden;margin-bottom:7px}.bar2 i{display:block;height:100%;background:var(--gold);transition:.3s}
+.chip{background:#2a1d22;border:1px solid #7a3340;color:#f2a1ab;border-radius:999px;padding:3px 10px;font:inherit;font-size:12px;cursor:pointer}
+.chk .row{gap:6px;font-size:12px}
+.hi{display:flex;gap:6px;align-items:center;border:1px solid var(--ln);border-radius:6px;padding:6px 8px;margin-bottom:5px;background:var(--pn2)}.hi span{flex:1;min-width:0}.hi small{color:var(--mu)}
+.ph{background:#fff1b8;color:#8a5a00;border-radius:2px;padding:0 2px}
+@media print{body{background:#fff}header,.form,.bar,.toast,.mt{display:none!important}.ph{background:none!important;color:inherit!important}body .prev{display:block!important}.paper{-webkit-print-color-adjust:exact;print-color-adjust:exact}.app{display:block;padding:0}.prev{position:static}.paper{max-height:none;overflow:visible;padding:0}.paper .cls{margin:0 0 18px;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">SASS</div>
+  <div><h1>SAN ANDREAS SECRET SERVICE</h1><small>Générateur de directives de sécurité — Déplacements protégés</small></div>
+  <div id="ss" style="margin-left:auto;font-size:12px;color:var(--mu)"></div>
+</header>
+
+<div class="app">
+<div class="form">
+
+  <div class="chk" id="chk"></div>
+  <div class="card">
+    <h2>⚡ Scénarios rapides</h2>
+    <div class="row" id="scn"></div>
+    <p style="margin:8px 0 0;color:var(--mu);font-size:12px">Pré-remplit le type de lieu, le niveau et les mesures. Tout reste modifiable ensuite.</p>
+  </div>
+  <div class="card">
+    <h2>1 · Personnes protégées (<span id="npr" style="float:none"></span>)</h2>
+    <div id="pl"></div>
+    <button class="btn s" id="addp" type="button" style="width:100%">＋ Ajouter une personne protégée</button>
+  </div>
+
+  <div class="card">
+    <h2>2 · Niveau de protection</h2>
+    <div class="lv" id="lv"></div>
+    <p style="margin:8px 0 0;color:var(--mu);font-size:12px" id="lvd"></p>
+  </div>
+
+  <div class="card">
+    <h2>3 · Lieu & horaires</h2>
+    <div class="g2">
+      <label class="f full">Nom du lieu<input id="lieu" list="dlx" placeholder="Ex : Le Vinewood Grill"></label>
+      <label class="f">Type de lieu<select id="type"></select></label>
+      <label class="f">Adresse / secteur<input id="adr" list="dad" placeholder="Ex : Vinewood Blvd"></label>
+      <label class="f">Date<input id="date" type="date"></label>
+      <label class="f">Participants attendus<input id="part" type="number" min="0" placeholder="Ex : 40"></label>
+      <label class="f">Arrivée<input id="arr" type="time" value="20:00"></label>
+      <label class="f">Départ<input id="dep" type="time" value="22:00"></label>
+      <label class="f">Rayon de sécurité (m)<input id="ray" type="number" min="0" value="50"></label>
+      <label class="f">Zone / salle concernée<input id="piece" placeholder="Ex : Salon privé"></label>
+      <label class="f full">Hôpital de repli<input id="hop" list="dh" placeholder="Ex : Pillbox Hill Medical Center"></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>4 · Destinataire & émetteur</h2>
+    <div class="g2">
+      <label class="f">Propriétaire / gérant<input id="prop" list="dp" placeholder="Nom du destinataire"></label>
+      <label class="f">Contact (tel / Discord)<input id="ctc" placeholder="Ex : 555-0142"></label>
+      <label class="f">Agent responsable<input id="agent" list="da" placeholder="Nom de l'agent"></label>
+      <label class="f">Matricule / Grade<input id="mat" placeholder="Ex : SA-014 · Spécial"></label>
+      <label class="f">Effectif du détail (agents)<input id="nbag" type="number" min="1" value="4"></label>
+      <label class="f">Contact SASS (24/7)<input id="sc" placeholder="Ex : 555-0100"></label>
+      <label class="f full">Canal radio / PC opérationnel<input id="rad" placeholder="Ex : Canal 3 · PC : bureau du gérant"></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>5 · Mesures de sécurité <span style="float:right;color:var(--mu);text-transform:none;letter-spacing:0" id="cnt"></span></h2>
+    <div class="row">
+      <button class="btn s" id="reco" type="button">⚡ Appliquer les recommandations</button>
+      <button class="btn s" id="all" type="button">Tout</button>
+      <button class="btn s" id="none" type="button">Aucune</button>
+    </div>
+    <input id="q" placeholder="🔍 Filtrer les mesures…" style="margin:10px 0 0"><div id="meas"></div>
+    <div class="pp" style="margin-top:12px"><b style="font-size:12px">＋ Mesure personnalisée</b><input id="cn" placeholder="Titre de la mesure"><textarea id="ct" placeholder="Texte de la consigne adressée au propriétaire…"></textarea><button class="btn s" id="addc" type="button" style="margin-top:6px">Ajouter à la directive</button></div>
+    <label class="f" style="margin-top:12px">Instructions supplémentaires (texte libre)<textarea id="extra" placeholder="Une consigne spécifique à ce lieu…"></textarea></label>
+  </div>
+
+  <div class="card">
+    <h2>6 · Personnalisation du document</h2>
+    <div class="g2">
+      <label class="f full">Division / service<input id="dv" value="Bureau de la Protection · Opérations préalables"></label>
+      <label class="f">Titre du signataire<input id="sgt" placeholder="Ex : Chef de détail"></label>
+      <label class="f">Validité<input id="vld" placeholder="Ex : fin de la visite"></label>
+      <label class="f">Réponse attendue<select id="rep"><option>dans les meilleurs délais</option><option>immédiatement</option><option>sous 24 heures</option><option>au plus tard 2 heures avant l'arrivée</option></select></label>
+      <label class="f">Police<select id="fnt"><option value="Georgia,serif">Serif</option><option value="Arial,sans-serif">Sans-serif</option><option value="'Courier New',monospace">Machine à écrire</option></select></label>
+      <label class="f">Couleur d'accent<input id="ac" type="color" value="#14181f" style="padding:2px;height:36px"></label>
+    </div>
+    <label class="m" style="margin-top:10px"><input type="checkbox" id="tgw" checked><div>Filigrane de classification</div></label>
+    <label class="m"><input type="checkbox" id="tgg" checked><div>Dispositions générales</div></label>
+    <label class="m"><input type="checkbox" id="tga" checked><div>Accusé de réception à signer</div></label>
+  </div>
+  <div class="card">
+    <h2>7 · Envoi Discord (optionnel)</h2>
+    <div class="g2">
+      <label class="f full">URL du webhook<input id="wh" type="password" placeholder="https://discord.com/api/webhooks/…"></label>
+      <label class="f full">ID Discord du propriétaire (pour la mention)<input id="did" placeholder="Ex : 123456789012345678"></label>
+      <label class="f full">Format du message<select id="fmt"><option value="full">Directive complète</option><option value="short">Résumé court</option></select></label>
+    </div>
+  </div>
+  <div class="card"><h2>8 · Directives enregistrées</h2>
+    <p id="cs" style="margin:0 0 8px;font-size:12px;color:var(--mu)">Connexion à la base de données…</p>
+    <div class="row" style="margin-bottom:8px"><button class="btn" id="cbtn" type="button">☁️ Enregistrer / mettre à jour</button><select id="cf" style="width:auto;margin:0"><option value="">Tous les statuts</option><option value="brouillon">Brouillons</option><option value="envoyee">Envoyées</option><option value="accusee">Accusées</option><option value="annulee">Annulées</option></select></div>
+    <div id="clist"></div>
+  </div>
+  <div class="card"><h2>9 · Brouillon</h2><p style="margin:0 0 8px;color:var(--mu);font-size:12px">Sauvegarde automatique du formulaire dans ce navigateur (hors base de données).</p><div class="row"><button class="btn s" id="ex" type="button">💾 Exporter</button><button class="btn s" id="imb" type="button">📂 Importer</button><button class="btn s" id="rs" type="button" style="color:var(--red)">🗑️ Réinitialiser</button></div><input type="file" id="im" accept=".json" hidden></div>
+</div>
+
+<div class="prev">
+  <div class="row bar" style="margin-bottom:10px">
+    <button class="btn" id="cp" type="button" title="Ctrl + Entrée">📋 Copier</button>
+    <button class="btn s" id="pr" type="button">🖨️ Imprimer / PDF</button>
+    <button class="btn s" id="dl" type="button">⬇️ Télécharger .txt</button>
+    <button class="btn d" id="sd" type="button">📨 Envoyer au propriétaire</button>
+  </div>
+  <div class="paper" id="doc"></div>
+</div>
+</div>
+<datalist id="dlx"><option value="Maze Bank Arena"><option value="Vinewood Bowl"><option value="Del Perro Pier"><option value="Diamond Casino & Resort"><option value="Los Santos City Hall"><option value="Richards Majestic Studios"><option value="Bahama Mamas West"><option value="Vanilla Unicorn"><option value="Pacific Standard Bank"><option value="Mission Row Police Station"><option value="Legion Square"><option value="Vespucci Beach"></datalist>
+<datalist id="dad"><option value="Vinewood"><option value="Rockford Hills"><option value="Del Perro"><option value="Vespucci"><option value="Mission Row"><option value="Legion Square"><option value="Little Seoul"><option value="Pillbox Hill"><option value="Sandy Shores"><option value="Paleto Bay"></datalist>
+<datalist id="dh"><option value="Pillbox Hill Medical Center"><option value="Central Los Santos Medical Center"><option value="Mount Zonah Medical Center"><option value="Sandy Shores Medical Center"><option value="Paleto Bay Care Center"></datalist>
+<datalist id="dp"></datalist><datalist id="da"></datalist>
+<nav class="mt"><button id="t1" class="on" type="button">✏️ Formulaire</button><button id="t2" type="button">📄 Aperçu</button></nav>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const FIREBASE_CONFIG={
+  apiKey:"AIzaSyD_FW83NhTEOv_Ispa6alh12buRktanYZ0",
+  authDomain:"san-andreas-secret-service.firebaseapp.com",
+  projectId:"san-andreas-secret-service",
+  storageBucket:"san-andreas-secret-service.firebasestorage.app",
+  messagingSenderId:"987082521078",
+  appId:"1:987082521078:web:6192227a065961b3962fd7",
+  measurementId:"G-L54S8XM1K2"
+};
+const $=i=>document.getElementById(i);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CATS={perim:'Périmètre & accès',ctrl:'Contrôle des personnes',ver:'Vérification des lieux',circ:'Circulation & véhicules',med:'Médical & repli',com:'Discrétion & communication',perso:'Mesures personnalisées'};
+const LV={
+ 1:['STANDARD','DIFFUSION RESTREINTE','#4cc9a0','Déplacement à risque faible : mesures de base, discrétion et accès contrôlé.'],
+ 2:['RENFORCÉ','CONFIDENTIEL','#e0b84c','Menace modérée : fouille préventive, listes nominatives et contrôle des accès.'],
+ 3:['ÉLEVÉ','SECRET','#ee8a3c','Menace élevée : lieu verrouillé, personnel vérifié, dispositif médical sur place.'],
+ 4:['MAXIMAL','TRÈS SECRET','#e5484d','Menace critique : dispositif complet, horaires modifiables sans préavis.']};
+const TYPES={ouvert:['Espace extérieur / voie publique',['perim','nofly','parking','conv']],hotel:['Hôtel / résidence',['personnel','safe']],resto:['Restaurant / bar / club',['fermeture','personnel']],bureau:['Bâtiment administratif / bureau',['liste','identite']],hopital:['Hôpital / établissement de santé',['ambu']],stade:['Stade / salle de spectacle',['magneto','nofly','colis']],culte:['Lieu de culte',['liste','sweep']],prive:['Propriété privée',['liste','sweep']]};
+// [id, cat, libellé, niveau mini, texte]
+const M=[
+['perim','perim','Périmètre de sécurité',1,"Un périmètre de sécurité sera établi par les agents du SASS autour de {lieu}. Aucune personne ne sera admise dans ce périmètre sans validation d'un agent."],
+['evac','perim','Voies d\'évacuation dégagées',1,"Toutes les issues de secours et voies d'évacuation devront être dégagées et opérationnelles. Aucune porte ne doit être verrouillée à clé de l'intérieur."],
+['fermeture','perim','Fermeture au public',3,"L'établissement devra être fermé au public de {hferm} à {hdep}. Aucune nouvelle personne ne sera admise durant cette période."],
+['condamn','perim','Condamnation des accès secondaires',3,"Les accès non indispensables (entrées de service, toit, sous-sol) seront condamnés ou placés sous la surveillance d'un agent dès {hsweep}."],
+['liste','ctrl','Liste d\'invités nominative',2,"Une liste nominative des personnes autorisées sera fournie par le SASS. Toute personne absente de cette liste se verra refuser l'accès."],
+['identite','ctrl','Vérification d\'identité',2,"Une pièce d'identité valide sera exigée à l'entrée pour toute personne accédant aux zones orange et rouge."],
+['magneto','ctrl','Contrôle d\'accès avec fouille',3,"Un contrôle d'accès avec fouille et détection sera installé à chaque entrée. Le propriétaire devra faciliter la mise en place de ce dispositif."],
+['personnel','ctrl','Vérification du personnel',3,"La liste complète du personnel présent (noms, fonctions, horaires) devra être transmise au SASS au plus tard 24 h avant l'arrivée afin de vérification. Tout employé non validé sera écarté des zones sensibles."],
+['armes','ctrl','Interdiction des armes',1,"Le port d'arme est interdit dans l'établissement durant la visite, à l'exception des agents du SASS et des personnes expressément autorisées par le SASS."],
+['colis','ctrl','Interdiction sacs, colis & livraisons',3,"Les sacs, colis, livraisons et objets non identifiés sont interdits durant la visite. Tout objet abandonné doit être signalé immédiatement à un agent, sans y toucher."],
+['sweep','ver','Fouille préventive (sweep)',2,"Une fouille préventive complète des locaux sera effectuée par les agents du SASS à partir de {hsweep}. Le propriétaire devra donner un accès intégral à toutes les pièces, y compris zones privées et techniques."],
+['scelle','ver','Scellement des zones fouillées',3,"Une fois fouillées, les zones sensibles seront scellées. Aucune personne ne pourra y pénétrer sans l'escorte d'un agent du SASS."],
+['cctv','ver','Accès aux caméras de surveillance',2,"Le SASS devra avoir accès aux caméras de surveillance et aux enregistrements de l'établissement durant la visite. Le propriétaire désignera une personne capable d'en assurer le fonctionnement."],
+['conv','circ','Zone de dépose du convoi',2,"Une zone de dépose et de reprise sera réservée aux véhicules officiels devant {lieu}. Elle devra être libre de tout véhicule et obstacle dès {hsweep}."],
+['parking','circ','Stationnement réservé',2,"Des places de stationnement seront exclusivement réservées au SASS et au convoi. Tout véhicule non autorisé pourra être déplacé."],
+['nofly','circ','Interdiction de survol (drones / hélicoptères)',3,"Le survol du site à basse altitude (drones, hélicoptères civils ou médiatiques) est interdit durant la visite. Toute présence suspecte devra être signalée immédiatement."],
+['hopi','med','Hôpital de repli',2,"Établissement hospitalier de repli désigné : {hop}. En cas d'urgence, le propriétaire facilitera le passage des équipes de secours."],
+['ambu','med','Équipe médicale / ambulance en attente',3,"Une équipe médicale ou une ambulance sera positionnée à proximité durant la visite. L'accès à l'établissement devra lui rester libre."],
+['safe','med','Salle de repli (safe room)',3,"Le propriétaire devra identifier une pièce de repli (sans fenêtre, porte renforcée si possible) pouvant servir de refuge en cas d'incident. Son emplacement sera communiqué uniquement aux agents du SASS."],
+['conf','com','Confidentialité du déplacement',1,"Ce déplacement est CONFIDENTIEL. Il est interdit d'en divulguer la date, l'heure ou le lieu à toute personne extérieure à la chaîne de décision, y compris sur les réseaux sociaux."],
+['contact','com','Point de contact unique',1,"Le propriétaire désignera un point de contact unique, joignable en permanence, qui sera l'interlocuteur exclusif du SASS jusqu'à la fin de la visite."],
+['photo','com','Interdiction photo / vidéo / streaming',2,"Toute prise de photo, de vidéo ou diffusion en direct est interdite dans l'établissement durant la visite, sauf accord explicite du SASS."],
+['presse','com','Gestion de la presse',2,"Aucun média ni journaliste ne sera admis sans accréditation préalable du SASS. Toute sollicitation de la presse doit être redirigée vers le SASS."],
+['secpriv','ctrl','Coordination de la sécurité privée',2,"Le personnel de sécurité privé du site sera placé sous la coordination du SASS pour la durée de la visite. Ses effectifs et armements éventuels devront être déclarés à l'avance."],
+['rue','circ','Interdiction de stationner aux abords',2,"Le stationnement est interdit dans un rayon de {rayon} mètres autour du site de {hsweep} à la fin de la visite. Le propriétaire signalera tout véhicule suspect ou abandonné."],
+['itin','circ','Itinéraires confidentiels et variables',3,"Les itinéraires d'arrivée et de départ du convoi sont confidentiels et pourront varier. Le personnel ne devra les communiquer à personne."],
+['brief','com','Briefing préalable du personnel',2,"Un briefing du personnel concerné sera organisé par le SASS avant l'arrivée. La présence de tout employé travaillant durant la visite y est obligatoire."],
+['fouillev','circ','Fouille des véhicules',2,"Tout véhicule entrant dans le périmètre ou sur le parking du site sera fouillé par les agents du SASS. Un véhicule dont le conducteur refuse la fouille se verra interdire l'accès."],
+['helico','circ','Hélicoptère de surveillance',3,"Un hélicoptère du SASS pourra surveiller le site et ses abords durant la visite. Le propriétaire n'a aucune action à mener, mais devra signaler aux agents toute activité suspecte aux abords."],
+['modif','com','Horaires modifiables sans préavis',4,"Les horaires communiqués sont indicatifs. Le SASS se réserve le droit de les avancer, les retarder ou d'annuler le déplacement sans préavis ni justification. Le propriétaire devra rester joignable."]
+];
+const S={lvl:2,sel:new Set(),ref:'',pp:[]};
+
+/* ---------- init ---------- */
+$('type').innerHTML=Object.entries(TYPES).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('');
+$('date').value=new Date().toISOString().slice(0,10);
+$('lv').innerHTML=Object.entries(LV).map(([k,v])=>`<button type="button" data-l="${k}" style="--c:${v[2]}"><b>${k}</b>${v[0]}</button>`).join('');
+try{$('wh').value=localStorage.getItem('sass_dir_wh')||''}catch(e){}
+
+function genRef(){const d=new Date().toISOString().slice(0,10).replace(/-/g,'');S.ref=`SASS-DIR-${d}-${Math.random().toString(36).slice(2,6).toUpperCase()}`}
+function genCode(){const a=['FALCON','RAVEN','ORION','TITAN','VIPER','EAGLE','COBRA','ATLAS','PHOENIX','SENTINEL','NOMAD','ZENITH','CONDOR','HALCYON','MAVERICK','CASTLE'];const u=S.pp.map(p=>p.c),l=a.filter(x=>!u.includes(x));return (l.length?l:a)[Math.floor(Math.random()*(l.length||a.length))]}
+function reco(){
+  S.sel=new Set(M.filter(m=>m[3]<=S.lvl||m[1]=='perso').map(m=>m[0]));
+  (TYPES[$('type').value][1]).forEach(id=>{ if(S.lvl>=2||id=='perim') S.sel.add(id) });
+  renderMeas();render();
+}
+function setLvl(l,doReco=true){
+  S.lvl=l;
+  document.querySelectorAll('#lv button').forEach(b=>b.classList.toggle('on',b.dataset.l==l));
+  $('lvd').textContent=LV[l][3];
+  if(doReco){S.pp.forEach(p=>p.h=l>=3);renderP();reco()}
+}
+function renderMeas(){
+  $('meas').innerHTML=Object.entries(CATS).map(([c,n])=>{
+    const q=($('q').value||'').toLowerCase(),items=M.filter(m=>m[1]===c&&(!q||(m[2]+m[4]).toLowerCase().includes(q)));if(!items.length)return '';
+    return `<div class="cat"><h3>${n}<span data-c="${c}">tout / rien</span></h3>`+items.map(m=>`<label class="m ${S.sel.has(m[0])?'on':''}" title="${esc(fill(m[4]))}"><input type="checkbox" data-id="${m[0]}" ${S.sel.has(m[0])?'checked':''}><div>${esc(m[2])}</div><em>${m[3]<99?'N'+m[3]+'+':'perso'}</em>${m[3]>98?'<em data-rm="'+m[0]+'" style="color:var(--red)">✕</em>':''}</label>`).join('')+`</div>`;
+  }).join('');
+  $('cnt').textContent=S.sel.size+' / '+M.length+' sélectionnées';
+}
+
+/* ---------- helpers ---------- */
+function shift(t,min){if(!t)return '—';const [h,m]=t.split(':').map(Number);let x=((h*60+m-min)%1440+1440)%1440;return String(Math.floor(x/60)).padStart(2,'0')+'h'+String(x%60).padStart(2,'0')}
+function hh(t){return t?t.replace(':','h'):'—'}
+function fdate(d){if(!d)return '—';const s=new Date(d+'T12:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});return s.charAt(0).toUpperCase()+s.slice(1)}
+function val(i,def='—'){return ($(i).value||'').trim()||def}
+function fill(t){
+  const arr=$('arr').value;
+  return t.replace('{lieu}',val('lieu','le site')).replace('{hsweep}',shift(arr,120)).replace('{hferm}',shift(arr,60)).replace('{hdep}',hh($('dep').value)).replace('{rayon}',val('ray','50')).replace('{hop}',val('hop','à communiquer par le SASS'));
+}
+
+/* ---------- document ---------- */
+function pname(p){const c=p.c||'—';return p.h?'« '+c+' »':(p.n||'[Nom]')+(p.f?' — '+p.f:'')+(p.c?' (« '+c+' »)':'')}
+function build(){
+  const L=LV[S.lvl],pp=S.pp,multi=pp.length>1,nm=pp.map(p=>p.h?'« '+(p.c||'—')+' »':(p.n||'[Nom]')),nl=multi?nm.slice(0,-1).join(', ')+' et '+nm[nm.length-1]:nm[0];
+  const rows=[
+    ['Destinataire',val('prop','[Propriétaire / gérant]')+($('ctc').value?' · '+$('ctc').value:'')],
+    ['Lieu',val('lieu','[Lieu]')+($('adr').value?' — '+$('adr').value:'')+' ('+TYPES[$('type').value][0]+')'],
+    ['Date',fdate($('date').value)],
+    ['Horaires','Arrivée prévue : '+hh($('arr').value)+' · Départ prévu : '+hh($('dep').value)],
+    [multi?'Personnes protégées ('+pp.length+')':'Personne protégée',pp.map(p=>(multi?p.r+' : ':'')+pname(p)).join('\n')],
+    ['Niveau de protection','NIVEAU '+S.lvl+' — '+L[0]],
+    ['Participants attendus',val('part')],
+    ['Poste de commandement / radio',val('rad')],
+    ['Émis par',val('agent','[Agent]')+($('mat').value?' · '+$('mat').value:'')+' — Détail de '+val('nbag','?')+' agent(s)']
+  ];
+  if($('piece').value)rows.splice(2,0,['Zone concernée',$('piece').value]);
+  if($('sc').value)rows.push(['Contact SASS (24/7)',$('sc').value]);
+  if($('vld').value)rows.push(['Validité',$('vld').value]);
+  const arts=[];let n=0;
+  for(const [c,cn] of Object.entries(CATS)){
+    const items=M.filter(m=>m[1]===c&&S.sel.has(m[0])).map(m=>({n:++n,t:m[2],x:fill(m[4])}));
+    if(items.length)arts.push({cn,items});
+  }
+  const gen=[
+   "Les agents du SASS sont seuls habilités à décider de toute modification du dispositif. Leurs instructions prévalent sur toute autre consigne durant la visite.",
+   "En cas d'incident, d'alerte ou de comportement suspect, le propriétaire et son personnel préviendront immédiatement l'agent le plus proche et suivront ses instructions sans discussion.",
+   "Le propriétaire accuse réception de la présente directive et confirme sa mise en application par retour écrit au SASS "+$('rep').value+"."
+  ];
+  return {L,rows,arts,gen,extra:($('extra').value||'').trim(),obj:`Dans le cadre du déplacement officiel de ${nl}, prévu le ${fdate($('date').value).toLowerCase()} à ${val('lieu','[Lieu]')}, le San Andreas Secret Service vous adresse les instructions de sécurité suivantes. Leur application stricte est obligatoire.`};
+}
+function render(){
+  const d=build(),dc=$('doc');
+  dc.style.fontFamily=$('fnt').value;dc.style.setProperty('--ac',$('ac').value);
+  dc.classList.toggle('noa',!$('tga').checked);dc.classList.toggle('nog',!$('tgg').checked);
+  dc.style.backgroundImage=$('tgw').checked?`url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='420' height='300'><text x='210' y='150' transform='rotate(-30 210 150)' text-anchor='middle' font-family='Arial' font-weight='700' font-size='34' fill='rgba(0,0,0,.055)'>${d.L[1]}</text></svg>`)}")`:'none';
+  let h=`<div class="cls" style="background:${d.L[2]}">${d.L[1]}</div>
+  <div class="hd"><h1>SAN ANDREAS SECRET SERVICE</h1><p>${esc(($('dv').value||'').toUpperCase())}</p></div>
+  <div style="text-align:center;font:700 15px Arial,sans-serif;letter-spacing:1px">DIRECTIVE DE SÉCURITÉ</div>
+  <div style="text-align:center;font:12px Arial,sans-serif;color:#555;margin-bottom:12px">Référence : ${esc(S.ref)} · Émise le ${new Date().toLocaleDateString('fr-FR')}</div>
+  <table>${d.rows.map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1]).replace(/\n/g,'<br>')}</td></tr>`).join('')}</table>
+  <h2>1 · Objet</h2><p>${esc(d.obj)}</p>
+  <h2>2 · Mesures de sécurité obligatoires</h2>`;
+  if(!d.arts.length)h+=`<p style="color:#888"><i>Aucune mesure sélectionnée.</i></p>`;
+  d.arts.forEach(a=>{h+=`<div class="sub">${a.cn}</div>`+a.items.map(i=>`<p class="art"><b>Art. ${i.n} — ${esc(i.t)}.</b> ${esc(i.x)}</p>`).join('')});
+  h+=`<div class="gen"><h2>3 · Dispositions générales</h2>`+d.gen.map((g,i)=>`<p class="art"><b>3.${i+1}</b> ${g}</p>`).join('')+'</div>';
+  if(d.extra)h+=`<h2>4 · Instructions complémentaires</h2><p>${esc(d.extra).replace(/\n/g,'<br>')}</p>`;
+  h+=`<div class="sig"><div>Pour le SASS<br><small>${esc(val('agent','[Agent]'))}${$('sgt').value?' · '+esc($('sgt').value):''}</small></div><div>Accusé de réception — le propriétaire<br><small>${esc(val('prop','[Propriétaire]'))} · Date / signature</small></div></div>
+  <div class="ft">${d.L[1]} — Document destiné exclusivement à son destinataire. Toute reproduction ou divulgation non autorisée est interdite.<br>San Andreas Secret Service · ${esc(S.ref)}</div>`;
+  $('doc').innerHTML=h.replace(/\[([^\]<]+)\]/g,'<mark class="ph">[$1]</mark>');save();chk();
+  $('cnt').textContent=S.sel.size+' / '+M.length+' sélectionnées';
+}
+function toText(){
+  const d=build(),l=[];
+  l.push(`[${d.L[1]}]`,'SAN ANDREAS SECRET SERVICE','DIRECTIVE DE SÉCURITÉ — '+S.ref,'');
+  d.rows.forEach(r=>l.push(`${r[0]} : ${r[1]}`));
+  l.push('','OBJET',d.obj,'','MESURES DE SÉCURITÉ OBLIGATOIRES');
+  d.arts.forEach(a=>{l.push('',`— ${a.cn.toUpperCase()} —`);a.items.forEach(i=>l.push(`Art. ${i.n} — ${i.t}. ${i.x}`))});
+  if($('tgg').checked){l.push('','DISPOSITIONS GÉNÉRALES');d.gen.forEach((g,i)=>l.push(`3.${i+1} ${g}`))}
+  if(d.extra)l.push('','INSTRUCTIONS COMPLÉMENTAIRES',d.extra);
+  l.push('','Merci de confirmer la réception de cette directive.',`— ${val('agent','[Agent]')}, SASS`);
+  return l.join('\n');
+}
+
+/* ---------- actions ---------- */
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2200)}
+async function copy(){try{await navigator.clipboard.writeText(toText());toast('Directive copiée ✔')}catch(e){toast('Copie impossible')}}
+function download(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([toText()],{type:'text/plain;charset=utf-8'}));a.download=S.ref+'.txt';a.click()}
+async function send(){
+  const wh=$('wh').value.trim();
+  if(!/^https:\/\/(discord|discordapp)\.com\/api\/webhooks\//.test(wh))return toast('Webhook Discord invalide');
+  if(!$('prop').value.trim()||!$('lieu').value.trim())return toast('Renseignez au moins le lieu et le destinataire');
+  if(!DB||!(await cloudSave()))return toast('Enregistrement en base impossible : envoi annulé');
+  try{localStorage.setItem('sass_dir_wh',wh)}catch(e){}
+  const d=build(),id=$('did').value.trim(),txt=$('fmt').value=='short'?d.rows.slice(0,6).map(r=>r[0]+' : '+r[1]).join('\n')+'\nMesures : '+d.arts.flatMap(a=>a.items.map(i=>i.t)).join(', '):toText();
+  const body={content:/^\d{15,22}$/.test(id)?`<@${id}> Nouvelle directive de sécurité du SASS.`:'Nouvelle directive de sécurité du SASS.',
+   embeds:[{title:`🛡️ Directive de sécurité — ${S.ref}`,description:'```\n'+txt.slice(0,3900)+'\n```',color:parseInt(d.L[2].slice(1),16),footer:{text:`SASS · ${d.L[1]} · Niveau ${S.lvl}`},timestamp:new Date().toISOString()}]};
+  try{const r=await fetch(wh,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(r.ok&&DB)cloudSave({status:'envoyee',sentAt:firebase.firestore.FieldValue.serverTimestamp()});toast(r.ok?'Directive envoyée ✔':'Échec de l\'envoi ('+r.status+')')}catch(e){toast('Erreur réseau')}
+}
+
+/* ---------- events ---------- */
+$('lv').onclick=e=>{const b=e.target.closest('button');if(b)setLvl(+b.dataset.l)};
+$('meas').onclick=e=>{
+  const r=e.target.closest('[data-rm]');if(r){e.preventDefault();const i=M.findIndex(m=>m[0]==r.dataset.rm);if(i>-1)M.splice(i,1);S.sel.delete(r.dataset.rm);renderMeas();render();return}
+  const s=e.target.closest('span[data-c]');
+  if(s){const ids=M.filter(m=>m[1]===s.dataset.c).map(m=>m[0]);const all=ids.every(i=>S.sel.has(i));ids.forEach(i=>all?S.sel.delete(i):S.sel.add(i));renderMeas();render();}
+};
+$('meas').onchange=e=>{const c=e.target.closest('input[data-id]');if(!c)return;c.checked?S.sel.add(c.dataset.id):S.sel.delete(c.dataset.id);c.closest('.m').classList.toggle('on',c.checked);render()};
+$('reco').onclick=reco;
+$('all').onclick=()=>{S.sel=new Set(M.map(m=>m[0]));renderMeas();render()};
+$('none').onclick=()=>{S.sel.clear();renderMeas();render()};
+$('type').onchange=reco;
+$('cp').onclick=copy;$('pr').onclick=()=>window.print();$('dl').onclick=download;$('sd').onclick=send;
+document.querySelectorAll('.form input:not([data-id]),.form select,.form textarea').forEach(e=>e.addEventListener('input',render));
+
+const ROLES=['Principal','Famille','Invité','Délégation','Autre'];
+function addP(p){S.pp.push(Object.assign({n:'',f:'',c:'',h:S.lvl>=3,r:'Principal'},p));const q=S.pp[S.pp.length-1];q.c=q.c||genCode()}
+function renderP(){
+  $('pl').innerHTML=S.pp.map((p,i)=>`<div class="pp"><div class="pt"><b>#${i+1}</b><select data-i="${i}" data-k="r">${ROLES.map(r=>`<option${r==p.r?' selected':''}>${r}</option>`).join('')}</select>${S.pp.length>1?`<button type="button" class="x" data-del="${i}" title="Retirer">✕</button>`:''}</div>
+  <div class="g2"><label class="f">Nom / Prénom<input data-i="${i}" data-k="n" value="${esc(p.n)}" placeholder="Ex : John Miller"></label><label class="f">Fonction<input data-i="${i}" data-k="f" value="${esc(p.f)}" placeholder="Ex : Gouverneur"></label>
+  <label class="f">Nom de code<span class="row" style="flex-wrap:nowrap"><input data-i="${i}" data-k="c" value="${esc(p.c)}"><button class="btn s" type="button" data-dice="${i}" style="margin-top:3px">🎲</button></span></label>
+  <label class="m" style="margin:18px 0 0"><input type="checkbox" data-i="${i}" data-k="h"${p.h?' checked':''}><div>Identité masquée</div></label></div></div>`).join('');
+  $('npr').textContent=S.pp.length;
+}
+$('pl').oninput=$('pl').onchange=e=>{const t=e.target,i=t.dataset.i;if(i==null)return;S.pp[i][t.dataset.k]=t.type=='checkbox'?t.checked:t.value;render()};
+$('pl').onclick=e=>{const d=e.target.closest('[data-del]'),r=e.target.closest('[data-dice]');if(d)S.pp.splice(+d.dataset.del,1);else if(r)S.pp[+r.dataset.dice].c=genCode();else return;renderP();render()};
+$('addp').onclick=()=>{addP();renderP();render()};
+$('addc').onclick=()=>{const t=$('cn').value.trim(),x=$('ct').value.trim();if(!t||!x)return toast('Titre et texte requis');const id='c'+Date.now();M.push([id,'perso',t,99,x]);S.sel.add(id);$('cn').value=$('ct').value='';renderMeas();render()};
+$('q').addEventListener('input',renderMeas);
+document.querySelectorAll('.card h2').forEach(h=>h.onclick=()=>h.parentNode.classList.toggle('col'));
+function tab(p){document.body.classList.toggle('vp',!!p);$('t1').classList.toggle('on',!p);$('t2').classList.toggle('on',!!p);scrollTo(0,0)}
+$('t1').onclick=()=>tab(0);$('t2').onclick=()=>tab(1);
+/* brouillon */
+const fields=()=>[...document.querySelectorAll('.form [id]')].filter(e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.tagName)&&!['wh','cf'].includes(e.id)&&e.type!=='file');
+function snap(){const f={};fields().forEach(e=>f[e.id]=e.type=='checkbox'?e.checked:e.value);return{f,lvl:S.lvl,sel:[...S.sel],pp:S.pp,cu:M.filter(m=>m[1]=='perso')}}
+function save(){try{localStorage.setItem('sass_dir_draft',JSON.stringify(snap()));$('ss').textContent='✔ Sauvegardé '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}catch(e){}}
+function apply(d){try{if(!d||!d.f||!d.pp||!d.pp.length)return false;M.splice(0,M.length,...M.filter(m=>m[1]!='perso'),...(d.cu||[]));Object.entries(d.f).forEach(([k,v])=>{const e=$(k);if(e){if(e.type=='checkbox')e.checked=v;else e.value=v}});S.lvl=d.lvl;S.sel=new Set(d.sel.filter(id=>M.some(m=>m[0]==id)));S.pp=d.pp;return true}catch(e){return false}}
+function load(){try{return apply(JSON.parse(localStorage.getItem('sass_dir_draft')))}catch(e){return false}}
+$('ex').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(snap())],{type:'application/json'}));a.download=S.ref+'.json';a.click()};
+$('imb').onclick=()=>$('im').click();
+$('im').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(apply(d)){setLvl(S.lvl,false);renderP();renderMeas();render();toast('Brouillon importé ✔')}else toast('Fichier invalide')}catch(x){toast('Fichier invalide')}e.target.value=''};
+$('rs').onclick=()=>{if(confirm('Réinitialiser le formulaire ?')){try{localStorage.removeItem('sass_dir_draft')}catch(e){}location.reload()}};
+/* checklist */
+function chk(){
+  const m=[];
+  [['lieu','Lieu'],['prop','Destinataire'],['date','Date'],['arr','Heure d\'arrivée'],['agent','Agent responsable']].forEach(([i,n])=>{if(!$(i).value.trim())m.push([i,n])});
+  if(!S.pp.some(p=>p.n.trim()))m.push(['pp','Nom du protégé']);
+  const tot=6;
+  $('chk').innerHTML=`<div class="bar2"><i style="width:${(tot-m.length)/tot*100}%"></i></div><div class="row">${m.length?'<span style="color:var(--mu)">À compléter :</span>'+m.map(x=>`<button type="button" class="chip" data-f="${x[0]}">${x[1]}</button>`).join(''):'<span style="color:var(--ok)">✔ Directive complète, prête à envoyer</span>'}</div>`;
+}
+$('chk').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;const f=b.dataset.f,el=f=='pp'?document.querySelector('#pl input[data-k=n]'):$(f);if(!el)return;if(innerWidth<=980)tab(0);const c=el.closest('.card');if(c)c.classList.remove('col');el.scrollIntoView({block:'center',behavior:'smooth'});el.focus()};
+/* scénarios */
+const SC={'🏛️ Visite officielle':['bureau',2,[]],'🍽️ Dîner / réception':['resto',2,['liste','fermeture']],'🎤 Conférence de presse':['ouvert',3,['presse','photo']],'🕶️ Déplacement discret':['prive',1,['itin']],'🏟️ Événement public':['stade',3,['fouillev','helico']]};
+$('scn').innerHTML=Object.keys(SC).map(k=>`<button class="btn s" type="button">${k}</button>`).join('');
+$('scn').onclick=e=>{const b=e.target.closest('button');if(!b)return;const [t,l,x]=SC[b.textContent];$('type').value=t;setLvl(l);x.forEach(i=>S.sel.add(i));renderMeas();render();toast('Scénario appliqué ✔')};
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key=='Enter'){e.preventDefault();copy()}});
+/* ---------- Firestore ---------- */
+let DB=null,UNSUB=null,CL=[];
+const ST={brouillon:['Brouillon','#8793a8'],envoyee:['Envoyée','#e0b84c'],accusee:['Accusée','#4cc9a0'],annulee:['Annulée','#e5484d']};
+const TS=()=>firebase.firestore.FieldValue.serverTimestamp(),COL=()=>DB.collection('sass_directives');
+function fbInit(cfg){
+  try{
+    if(typeof firebase=='undefined')throw new Error('SDK Firebase indisponible (hors ligne ?)');
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    DB=firebase.firestore();
+    $('cs').textContent='✔ Connecté · projet '+cfg.projectId;$('cs').style.color='var(--ok)';
+        if(UNSUB)UNSUB();
+    UNSUB=COL().orderBy('updatedAt','desc').limit(50).onSnapshot(q=>{CL=q.docs.map(d=>d.data());renderC()},e=>{$('cs').textContent='⚠ '+(e.code||e.message);$('cs').style.color='var(--red)';toast('Firestore : '+(e.code||e.message))});
+    return true;
+  }catch(e){$('cs').textContent='⚠ Base de données injoignable : '+e.message;$('cs').style.color='var(--red)';toast('Connexion impossible : '+e.message);return false}
+}
+async function cloudSave(extra={}){
+  if(!DB){toast('Non connecté au cloud');return false}
+  const cur=CL.find(x=>x.ref==S.ref);
+  const o=Object.assign({ref:S.ref,lieu:val('lieu',''),date:$('date').value,arr:$('arr').value,prop:val('prop',''),agent:val('agent',''),lvl:S.lvl,nb:S.pp.length,data:JSON.stringify(snap()),updatedAt:TS()},cur?{}:{status:'brouillon',createdAt:TS()},extra);
+  try{await COL().doc(S.ref).set(o,{merge:true});return true}catch(e){toast('Échec cloud : '+(e.code||e.message));return false}
+}
+function renderC(){
+  const f=$('cf').value,today=new Date().toISOString().slice(0,10),a=CL.filter(x=>!f||x.status==f);
+  const em=(t,c)=>`<em style="font-style:normal;font-size:11px;border:1px solid ${c};color:${c};border-radius:4px;padding:0 6px">${t}</em>`;
+  $('clist').innerHTML=a.length?a.map(x=>{const st=ST[x.status]||ST.brouillon,late=x.status=='envoyee'&&x.date&&x.date<=today,r=esc(x.ref);
+    return `<div class="hi" style="flex-wrap:wrap"><span><b>${esc(x.lieu||'Sans lieu')}</b> <small>· ${esc(x.date||'')} ${esc(x.arr||'')}</small><br><small>${r} · N${x.lvl} · ${x.nb} pers. · ${esc(x.agent||'—')}${x.prop?' → '+esc(x.prop):''}</small><br>${em(st[0],st[1])}${late?' '+em('⚠ sans accusé','#e5484d'):''}</span>
+    <div class="row" style="width:100%"><button class="btn s" data-co="${r}" type="button">Ouvrir</button><button class="btn s" data-cd="${r}" type="button">Dupliquer</button>${x.status=='envoyee'?`<button class="btn s" data-ck="${r}" type="button">✔ Accusé</button>`:''}${x.status!='annulee'?`<button class="btn s" data-cx="${r}" type="button">Annuler</button>`:''}<button class="x" data-cr="${r}" type="button">✕</button></div></div>`}).join(''):'<small style="color:var(--mu)">Aucune directive.</small>';
+  const dl=k=>[...new Set(CL.map(h=>h[k]).filter(Boolean))].map(v=>`<option value="${esc(v)}">`).join('');$('dp').innerHTML=dl('prop');$('da').innerHTML=dl('agent');
+}
+$('cf').onchange=renderC;
+$('cbtn').onclick=async()=>{if(await cloudSave())toast('Enregistré dans le cloud ☁️')};
+$('clist').onclick=async e=>{
+  const g=k=>{const b=e.target.closest('['+k+']');return b&&b.getAttribute(k)};
+  const o=g('data-co'),d=g('data-cd'),k=g('data-ck'),x=g('data-cx'),r=g('data-cr');
+  try{
+    if(o||d){const it=CL.find(c=>c.ref==(o||d));if(!it||!apply(JSON.parse(it.data)))return toast('Chargement impossible');if(o)S.ref=it.ref;else genRef();setLvl(S.lvl,false);renderP();renderMeas();render();toast(o?'Directive ouverte ✔':'Copie créée ✔');if(innerWidth<=980)tab(1)}
+    else if(k)await COL().doc(k).update({status:'accusee',ackAt:TS()});
+    else if(x)await COL().doc(x).update({status:'annulee'});
+    else if(r&&confirm('Supprimer définitivement cette directive ?'))await COL().doc(r).delete();
+  }catch(err){toast('Erreur : '+(err.code||err.message))}
+};
+genRef();
+if(!load()){addP();setLvl(2)}else{setLvl(S.lvl,false);renderP();renderMeas();render()}
+fbInit(FIREBASE_CONFIG);
+</script>
+</body>
+</html>
