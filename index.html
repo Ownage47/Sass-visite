@@ -75,6 +75,36 @@ textarea{resize:vertical;min-height:60px}
 .chk .row{gap:6px;font-size:12px}
 .hi{display:flex;gap:6px;align-items:center;border:1px solid var(--ln);border-radius:6px;padding:6px 8px;margin-bottom:5px;background:var(--pn2)}.hi span{flex:1;min-width:0}.hi small{color:var(--mu)}
 .ph{background:#fff1b8;color:#8a5a00;border-radius:2px;padding:0 2px}
+.tabs{display:flex;gap:6px;margin-left:auto}
+.tabs button{background:none;border:1px solid transparent;color:var(--mu);padding:8px 14px;border-radius:8px;cursor:pointer;font:inherit;font-weight:700}
+.tabs button.on{background:var(--pn2);border-color:var(--gold);color:var(--gold)}
+.tabs b{background:var(--gold);color:#111;border-radius:999px;padding:0 7px;font-size:11px;margin-left:4px}
+.card h2{cursor:default}.card h2::after{content:none!important}
+.steps{display:flex;gap:6px;margin-bottom:8px}
+.steps button{flex:1;background:var(--pn);border:1px solid var(--ln);color:var(--mu);border-radius:8px;padding:9px 4px;cursor:pointer;font:inherit;font-size:12px;font-weight:700}
+.steps button.on{border-color:var(--gold);color:var(--gold);background:#1b2133}
+.steps button.ok{color:var(--ok)}.steps button.on.ok{color:var(--gold)}
+.sh{margin:0 0 8px;color:var(--mu);font-size:13px}
+.form .card{display:none}
+.form[data-s="1"] [data-st="1"],.form[data-s="2"] [data-st="2"],.form[data-s="3"] [data-st="3"],.form[data-s="4"] [data-st="4"]{display:block}
+.nav2{display:flex;gap:8px;margin:4px 0 14px}.nav2 .btn{flex:1}
+.dir{display:none;max-width:1100px;margin:auto;padding:18px 22px 40px}
+body.v2 .dir{display:block}body.v2 .app,body.v2 .mt{display:none!important}
+.dh{display:flex;justify-content:space-between;align-items:center;gap:10px}.dh h2{margin:0;color:var(--gold);letter-spacing:2px;font-size:16px}
+.mut{color:var(--mu);font-size:12px;margin:6px 0 12px}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.stats button{background:var(--pn);border:1px solid var(--ln);color:var(--mu);border-radius:10px;padding:8px 14px;cursor:pointer;font:inherit;text-align:left;min-width:92px}
+.stats button b{display:block;font-size:20px;color:var(--gold)}.stats button.on{border-color:var(--gold)}
+#clist{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px;margin:12px 0}
+.dc{background:var(--pn);border:1px solid var(--ln);border-left:4px solid var(--c);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:5px}
+.dc h3{margin:0;font-size:15px}.dc small{color:var(--mu)}.dc .row{margin-top:auto;padding-top:8px}
+.bdg{font-size:11px;border:1px solid;border-radius:4px;padding:0 6px;font-style:normal}
+@media(max-width:700px){header{flex-wrap:wrap}.tabs{width:100%;margin-left:0}.tabs button{flex:1}.dir{padding:12px}.steps button{font-size:11px;padding:8px 2px}}
+.paper .mk{margin:0 0 12px;padding:6px 10px;border:1.5px solid var(--ac);text-align:center;font:700 11px Arial,sans-serif;letter-spacing:1px}
+.paper .mk.wn{font-weight:400;letter-spacing:0;text-align:left;font-size:12px}
+.dmp{border:1px solid var(--ln);border-radius:8px;padding:8px;margin-top:8px;background:#0f1626}
+.dmh{display:flex;align-items:center;gap:8px;margin-bottom:6px}.dmh small{margin-left:auto;color:var(--mu)}.dmh .btn{padding:6px 12px}
+.dmp textarea{min-height:140px;font:12px/1.4 Consolas,monospace}
 @media print{body{background:#fff}header,.form,.bar,.toast,.mt{display:none!important}.ph{background:none!important;color:inherit!important}body .prev{display:block!important}.paper{-webkit-print-color-adjust:exact;print-color-adjust:exact}.app{display:block;padding:0}.prev{position:static}.paper{max-height:none;overflow:visible;padding:0}.paper .cls{margin:0 0 18px;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head>
@@ -82,12 +112,14 @@ textarea{resize:vertical;min-height:60px}
 <header>
   <div class="logo">SASS</div>
   <div><h1>SAN ANDREAS SECRET SERVICE</h1><small>Générateur de directives de sécurité — Déplacements protégés</small></div>
-  <div id="ss" style="margin-left:auto;font-size:12px;color:var(--mu)"></div>
+  <nav class="tabs"><button id="n1" class="on" type="button">✍️ Nouvelle directive</button><button id="n2" type="button">📁 Directives <b id="nc">0</b></button></nav>
+  <div id="ss" style="font-size:12px;color:var(--mu)"></div>
 </header>
 
 <div class="app">
-<div class="form">
-
+<div class="form" data-s="1">
+  <div class="steps" id="steps"></div>
+  <p class="sh" id="sh"></p>
   <div class="chk" id="chk"></div>
   <div class="card">
     <h2>⚡ Scénarios rapides</h2>
@@ -125,8 +157,11 @@ textarea{resize:vertical;min-height:60px}
   <div class="card">
     <h2>4 · Destinataire & émetteur</h2>
     <div class="g2">
-      <label class="f">Propriétaire / gérant<input id="prop" list="dp" placeholder="Nom du destinataire"></label>
+      <label class="f">Destinataire (nom)<input id="prop" list="dp" placeholder="Nom du destinataire"></label>
       <label class="f">Contact (tel / Discord)<input id="ctc" placeholder="Ex : 555-0142"></label>
+      <label class="f">Grade du destinataire<input id="propg" placeholder="Ex : Capitaine, Directeur adjoint"></label>
+      <label class="f">Rôle / fonction<input id="propr" list="drl" placeholder="Ex : Propriétaire, Gérant"></label>
+      <label class="f full">Organisation / établissement<input id="orga" placeholder="Ex : LSPD, Bahama Mamas West"></label>
       <label class="f">Agent responsable<input id="agent" list="da" placeholder="Nom de l'agent"></label>
       <label class="f">Matricule / Grade<input id="mat" placeholder="Ex : SA-014 · Spécial"></label>
       <label class="f">Effectif du détail (agents)<input id="nbag" type="number" min="1" value="4"></label>
@@ -157,10 +192,31 @@ textarea{resize:vertical;min-height:60px}
       <label class="f">Réponse attendue<select id="rep"><option>dans les meilleurs délais</option><option>immédiatement</option><option>sous 24 heures</option><option>au plus tard 2 heures avant l'arrivée</option></select></label>
       <label class="f">Police<select id="fnt"><option value="Georgia,serif">Serif</option><option value="Arial,sans-serif">Sans-serif</option><option value="'Courier New',monospace">Machine à écrire</option></select></label>
       <label class="f">Couleur d'accent<input id="ac" type="color" value="#14181f" style="padding:2px;height:36px"></label>
+      <label class="f full">Nom du fichier (PDF et .txt)<input id="pdfn" placeholder="Auto"><small style="display:block;margin-top:3px;text-transform:none;letter-spacing:0">Variables : {lieu} {date} {ref} {niveau} {destinataire}. Laissez vide pour un nom automatique.</small></label>
     </div>
     <label class="m" style="margin-top:10px"><input type="checkbox" id="tgw" checked><div>Filigrane de classification</div></label>
     <label class="m"><input type="checkbox" id="tgg" checked><div>Dispositions générales</div></label>
     <label class="m"><input type="checkbox" id="tga" checked><div>Accusé de réception à signer</div></label>
+  </div>
+  <div class="card">
+    <h2>Confidentialité du document</h2>
+    <div class="g2">
+      <label class="f">Classification<select id="cls"><option value="">Automatique (selon le niveau)</option><option value="1">Diffusion restreinte</option><option value="2">Confidentiel</option><option value="3">Secret</option><option value="4">Très secret</option></select></label>
+      <label class="f">Diffusion<select id="dif"><option value="">Non précisée</option><option>Destinataire uniquement — ne pas transmettre</option><option>Direction et personnel habilité du site</option><option>Chaîne de commandement du SASS uniquement</option></select></label>
+      <label class="f">Exemplaire n°<input id="exn" type="number" min="1" value="1"></label>
+      <label class="f">Sur un total de<input id="ext" type="number" min="1" value="1"></label>
+      <label class="f full">Avertissement personnalisé<textarea id="cwn" placeholder="Ex : Toute fuite de ce document entraînera des sanctions."></textarea></label>
+    </div>
+    <label class="m" style="margin-top:10px"><input type="checkbox" id="tgn"><div>Afficher le numéro d'exemplaire</div></label>
+    <label class="m"><input type="checkbox" id="tgr"><div>Filigrane nominatif (nom du destinataire)</div></label>
+    <label class="m"><input type="checkbox" id="tgc"><div>Mention « Ne pas reproduire ni photographier »</div></label>
+    <label class="m"><input type="checkbox" id="tgd"><div>Mention « À détruire après la visite »</div></label>
+  </div>
+  <div class="card">
+    <h2>Mail à copier sur Discord</h2>
+    <label class="f">Mot personnel (facultatif)<textarea id="dmn" placeholder="Ex : Merci de votre coopération et de votre accueil."></textarea></label>
+    <p class="mut" id="dmi" style="margin-bottom:0"></p>
+    <div id="dmp"></div>
   </div>
   <div class="card">
     <h2>7 · Envoi Discord (optionnel)</h2>
@@ -170,12 +226,7 @@ textarea{resize:vertical;min-height:60px}
       <label class="f full">Format du message<select id="fmt"><option value="full">Directive complète</option><option value="short">Résumé court</option></select></label>
     </div>
   </div>
-  <div class="card"><h2>8 · Directives enregistrées</h2>
-    <p id="cs" style="margin:0 0 8px;font-size:12px;color:var(--mu)">Connexion à la base de données…</p>
-    <div class="row" style="margin-bottom:8px"><button class="btn" id="cbtn" type="button">☁️ Enregistrer / mettre à jour</button><select id="cf" style="width:auto;margin:0"><option value="">Tous les statuts</option><option value="brouillon">Brouillons</option><option value="envoyee">Envoyées</option><option value="accusee">Accusées</option><option value="annulee">Annulées</option></select></div>
-    <div id="clist"></div>
-  </div>
-  <div class="card"><h2>9 · Brouillon</h2><p style="margin:0 0 8px;color:var(--mu);font-size:12px">Sauvegarde automatique du formulaire dans ce navigateur (hors base de données).</p><div class="row"><button class="btn s" id="ex" type="button">💾 Exporter</button><button class="btn s" id="imb" type="button">📂 Importer</button><button class="btn s" id="rs" type="button" style="color:var(--red)">🗑️ Réinitialiser</button></div><input type="file" id="im" accept=".json" hidden></div>
+  <div class="nav2"><button class="btn s" id="prv" type="button">← Précédent</button><button class="btn" id="nxt" type="button">Suivant →</button></div>
 </div>
 
 <div class="prev">
@@ -183,14 +234,24 @@ textarea{resize:vertical;min-height:60px}
     <button class="btn" id="cp" type="button" title="Ctrl + Entrée">📋 Copier</button>
     <button class="btn s" id="pr" type="button">🖨️ Imprimer / PDF</button>
     <button class="btn s" id="dl" type="button">⬇️ Télécharger .txt</button>
+    <button class="btn s" id="dmb" type="button">💬 Mail Discord</button>
     <button class="btn d" id="sd" type="button">📨 Envoyer au propriétaire</button>
   </div>
   <div class="paper" id="doc"></div>
 </div>
 </div>
+<main class="dir" id="dir">
+  <div class="dh"><h2>📁 DIRECTIVES</h2><button class="btn" id="newd" type="button">＋ Nouvelle directive</button></div>
+  <p id="cs" class="mut">Connexion à la base de données…</p>
+  <div class="stats" id="stats"></div>
+  <input id="dq" placeholder="🔍 Rechercher : lieu, agent, destinataire, protégé, référence…">
+  <div id="clist"></div>
+  <div class="card"><h2>Sauvegarde du formulaire</h2><p class="mut" style="margin-top:0">Le formulaire en cours est sauvegardé automatiquement dans ce navigateur. Les directives enregistrées sont dans la base de données.</p><div class="row"><button class="btn s" id="ex" type="button">💾 Exporter le brouillon</button><button class="btn s" id="imb" type="button">📂 Importer un brouillon</button></div><input type="file" id="im" accept=".json" hidden></div>
+</main>
 <datalist id="dlx"><option value="Maze Bank Arena"><option value="Vinewood Bowl"><option value="Del Perro Pier"><option value="Diamond Casino & Resort"><option value="Los Santos City Hall"><option value="Richards Majestic Studios"><option value="Bahama Mamas West"><option value="Vanilla Unicorn"><option value="Pacific Standard Bank"><option value="Mission Row Police Station"><option value="Legion Square"><option value="Vespucci Beach"></datalist>
 <datalist id="dad"><option value="Vinewood"><option value="Rockford Hills"><option value="Del Perro"><option value="Vespucci"><option value="Mission Row"><option value="Legion Square"><option value="Little Seoul"><option value="Pillbox Hill"><option value="Sandy Shores"><option value="Paleto Bay"></datalist>
 <datalist id="dh"><option value="Pillbox Hill Medical Center"><option value="Central Los Santos Medical Center"><option value="Mount Zonah Medical Center"><option value="Sandy Shores Medical Center"><option value="Paleto Bay Care Center"></datalist>
+<datalist id="drl"><option value="Propriétaire"><option value="Gérant"><option value="Directeur"><option value="Responsable de la sécurité"><option value="Organisateur"><option value="Représentant officiel"></datalist>
 <datalist id="dp"></datalist><datalist id="da"></datalist>
 <nav class="mt"><button id="t1" class="on" type="button">✏️ Formulaire</button><button id="t2" type="button">📄 Aperçu</button></nav>
 <div class="toast" id="toast"></div>
@@ -268,7 +329,7 @@ function setLvl(l,doReco=true){
   S.lvl=l;
   document.querySelectorAll('#lv button').forEach(b=>b.classList.toggle('on',b.dataset.l==l));
   $('lvd').textContent=LV[l][3];
-  if(doReco){S.pp.forEach(p=>p.h=l>=3);renderP();reco()}
+  if(doReco){S.pp.forEach(p=>p.h=l>=3);$('tgc').checked=$('tgr').checked=l>=3;$('tgd').checked=l>=4;renderP();reco()}
 }
 function renderMeas(){
   $('meas').innerHTML=Object.entries(CATS).map(([c,n])=>{
@@ -289,17 +350,58 @@ function fill(t){
 }
 
 /* ---------- document ---------- */
+const CLSN={1:['DIFFUSION RESTREINTE','#4cc9a0'],2:['CONFIDENTIEL','#e0b84c'],3:['SECRET','#ee8a3c'],4:['TRÈS SECRET','#e5484d']};
+function rcp(){const x=[$('propg').value.trim(),$('propr').value.trim()].filter(Boolean).join(' · '),o=$('orga').value.trim();return val('prop','[Destinataire]')+(x?' — '+x:'')+(o?' ('+o+')':'')}
+function mk(){const m=[];if($('tgn').checked)m.push('EXEMPLAIRE N° '+val('exn','1')+' / '+val('ext','1'));if($('dif').value)m.push('DIFFUSION : '+$('dif').value.toUpperCase());if($('tgc').checked)m.push('NE PAS REPRODUIRE NI PHOTOGRAPHIER');if($('tgd').checked)m.push('À DÉTRUIRE APRÈS LA VISITE');return m}
+function fname(){
+  const T={lieu:$('lieu').value.trim(),date:$('date').value,ref:S.ref,niveau:'N'+S.lvl,destinataire:$('prop').value.trim()};
+  const n=($('pdfn').value.trim()||'Directive_SASS_{lieu}_{date}_{ref}').replace(/\{(\w+)\}/g,(m,k)=>k in T?T[k]:'').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,'');
+  return n||S.ref;
+}
+const OT=document.title;
+addEventListener('beforeprint',()=>{document.title=fname()});
+addEventListener('afterprint',()=>{document.title=OT});
+/* message Discord (markdown) */
+const dsan=t=>String(t).replace(/@(everyone|here)/gi,'@\u200b$1').replace(/<@/g,'<\u200b@');
+function dmParts(){
+  const d=build(),id=$('did').value.trim(),pp=S.pp,sig=$('tga').checked,L=[];
+  const nm=pp.map(p=>p.h?'« '+(p.c||'—')+' »':(p.n||'[Nom]')),pl=nm.length>1?nm.slice(0,-1).join(', ')+' et '+nm[nm.length-1]:nm[0];
+  const g=[$('propg').value.trim(),$('prop').value.trim()].filter(Boolean).join(' ');
+  const keep=['Lieu','Zone concernée','Date','Horaires','Personne protégée','Personnes protégées','Niveau de protection','Accord / signature SASS','Contact SASS','Validité'];
+  const rows=d.rows.filter(r=>keep.some(k=>r[0].startsWith(k))&&String(r[1]).trim()!='—');
+  const nb=d.arts.reduce((n,a)=>n+a.items.length,0),lieu=$('lieu').value.trim();
+  if(/^\d{15,22}$/.test(id))L.push(`<@${id}>`);
+  L.push('# 📨 SASS — Directive de sécurité à signer',`**Objet** : Directive de sécurité — ${dsan(val('lieu','[Lieu]'))} — ${fdate($('date').value)}`,`**Réf.** \`${S.ref}\` · **${d.L[1]}**`);
+  if(d.marks.length)L.push('-# '+d.marks.join(' · '));
+  if(d.warn)L.push('> ⚠️ '+dsan(d.warn).replace(/\n/g,'\n> '));
+  L.push('',`Bonjour ${dsan(g||'[Destinataire]')},`,'',`Le San Andreas Secret Service vous adresse la directive de sécurité relative au déplacement de ${dsan(pl)}${lieu?' à **'+dsan(lieu)+'**':''}. Elle détaille les **${nb} mesures** que vous devrez appliquer.`,'','## 📋 Informations principales');
+  rows.forEach(r=>{const v=String(r[1]).split('\n');L.push(v.length>1?`> **${r[0]}** :\n`+v.map(x=>'> • '+dsan(x)).join('\n'):`> **${r[0]}** : ${dsan(v[0])}`)});
+  L.push('',sig?'## ✍️ Signature attendue':'## ✅ Confirmation attendue');
+  L.push(sig?`Votre **signature** est attendue sur la directive ci-jointe ${$('rep').value}. En apposant sa signature, ${dsan(rcp())} s'engage à respecter l'intégralité de la directive ainsi que les ordres donnés par les agents du SASS pendant toute la durée de la visite. Cette signature est **irrévocable** : elle ne peut être ni annulée, ni retirée, ni contestée.`:`Merci de confirmer la réception de la directive ci-jointe ${$('rep').value}.`);
+  L.push('',`📎 **Pièce jointe** : \`${fname()}.pdf\``);
+  if($('dmn').value.trim())L.push('',dsan($('dmn').value.trim()));
+  L.push('','Cordialement,',`**${dsan(val('agent','[Agent]'))}**`,'-# '+[$('mat').value.trim(),$('sgt').value.trim()].filter(Boolean).map(dsan).join(' · ')+(($('mat').value.trim()||$('sgt').value.trim())?' — ':'')+'San Andreas Secret Service');
+  return L.join('\n').match(/[\s\S]{1,1900}/g)||[''];
+}
+function dm(){
+  const P=dmParts();
+    $('dmi').textContent=P.length>1?`Le texte dépasse la limite de Discord (2000 caractères) : il est découpé en ${P.length} messages à envoyer dans l'ordre.`:'Copiez ce message dans Discord, puis joignez-y le PDF de la directive (Imprimer / PDF).';
+  $('dmp').innerHTML=P.map((p,i)=>`<div class="dmp"><div class="dmh"><b>${P.length>1?'Message '+(i+1)+'/'+P.length:'Message'}</b><small>${p.length} / 2000</small><button class="btn" data-cp="${i}" type="button">📋 Copier</button></div><textarea readonly rows="7">${esc(p)}</textarea></div>`).join('');
+}
+$('dmp').onclick=async e=>{const b=e.target.closest('[data-cp]');if(!b)return;try{await navigator.clipboard.writeText(b.closest('.dmp').querySelector('textarea').value);toast('Message copié ✔')}catch(x){toast('Copie impossible')}};
+$('dmb').onclick=()=>{view(1);if(innerWidth<=980)tab(0);step(4);setTimeout(()=>$('dmp').scrollIntoView({behavior:'smooth',block:'start'}),50)};
 function sgs(){return $('auth').value.trim()||(val('agent','[Agent]')+($('mat').value?' · '+$('mat').value:'')+($('sgt').value?' · '+$('sgt').value:''))}
 function pname(p){const c=p.c||'—';return p.h?'« '+c+' »':(p.n||'[Nom]')+(p.f?' — '+p.f:'')+(p.c?' (« '+c+' »)':'')}
 function build(){
-  const L=LV[S.lvl],pp=S.pp,multi=pp.length>1,nm=pp.map(p=>p.h?'« '+(p.c||'—')+' »':(p.n||'[Nom]')),nl=multi?nm.slice(0,-1).join(', ')+' et '+nm[nm.length-1]:nm[0];
+  const L0=LV[S.lvl],ov=$('cls').value,L=ov?[L0[0],CLSN[ov][0],CLSN[ov][1],L0[3]]:L0,pp=S.pp,multi=pp.length>1,nm=pp.map(p=>p.h?'« '+(p.c||'—')+' »':(p.n||'[Nom]')),nl=multi?nm.slice(0,-1).join(', ')+' et '+nm[nm.length-1]:nm[0];
   const rows=[
-    ['Destinataire',val('prop','[Propriétaire / gérant]')+($('ctc').value?' · '+$('ctc').value:'')],
+    ['Destinataire',rcp()+($('ctc').value?' · '+$('ctc').value:'')],
     ['Lieu',val('lieu','[Lieu]')+($('adr').value?' — '+$('adr').value:'')+' ('+TYPES[$('type').value][0]+')'],
     ['Date',fdate($('date').value)],
     ['Horaires','Arrivée prévue : '+hh($('arr').value)+' · Départ prévu : '+hh($('dep').value)],
     [multi?'Personnes protégées ('+pp.length+')':'Personne protégée',pp.map(p=>(multi?p.r+' : ':'')+pname(p)).join('\n')],
     ['Niveau de protection','NIVEAU '+S.lvl+' — '+L[0]],
+    ['Classification',L[1]],
     ['Participants attendus',val('part')],
     ['Poste de commandement / radio',val('rad')],
     ['Émis par',val('agent','[Agent]')+($('mat').value?' · '+$('mat').value:'')+' — Détail de '+val('nbag','?')+' agent(s)']
@@ -318,17 +420,17 @@ function build(){
    "En cas d'incident, d'alerte ou de comportement suspect, le propriétaire et son personnel préviendront immédiatement l'agent le plus proche et suivront ses instructions sans discussion.",
    "Le propriétaire accuse réception de la présente directive et confirme sa mise en application par retour écrit au SASS "+$('rep').value+"."
   ];
-  return {L,rows,arts,gen,extra:($('extra').value||'').trim(),obj:`Dans le cadre du déplacement officiel de ${nl}, prévu le ${fdate($('date').value).toLowerCase()} à ${val('lieu','[Lieu]')}, le San Andreas Secret Service vous adresse les instructions de sécurité suivantes. Leur application stricte est obligatoire.`};
+  return {L,rows,arts,gen,marks:mk(),warn:($('cwn').value||'').trim(),extra:($('extra').value||'').trim(),obj:`Dans le cadre du déplacement officiel de ${nl}, prévu le ${fdate($('date').value).toLowerCase()} à ${val('lieu','[Lieu]')}, le San Andreas Secret Service vous adresse les instructions de sécurité suivantes. Leur application stricte est obligatoire.`};
 }
 function render(){
   const d=build(),dc=$('doc');
   dc.style.fontFamily=$('fnt').value;dc.style.setProperty('--ac',$('ac').value);
   dc.classList.toggle('noa',!$('tga').checked);dc.classList.toggle('nog',!$('tgg').checked);
-  dc.style.backgroundImage=$('tgw').checked?`url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='420' height='300'><text x='210' y='150' transform='rotate(-30 210 150)' text-anchor='middle' font-family='Arial' font-weight='700' font-size='34' fill='rgba(0,0,0,.055)'>${d.L[1]}</text></svg>`)}")`:'none';
+  dc.style.backgroundImage=$('tgw').checked?`url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='560' height='320'><text x='280' y='160' transform='rotate(-30 280 160)' text-anchor='middle' font-family='Arial' font-weight='700' font-size='26' fill='rgba(0,0,0,.055)'>${esc(d.L[1]+($('tgr').checked&&$('prop').value.trim()?' · '+$('prop').value.trim().toUpperCase():''))}</text></svg>`)}")`:'none';
   let h=`<div class="cls" style="background:${d.L[2]}">${d.L[1]}</div>
   <div class="hd"><h1>SAN ANDREAS SECRET SERVICE</h1><p>${esc(($('dv').value||'').toUpperCase())}</p></div>
   <div style="text-align:center;font:700 15px Arial,sans-serif;letter-spacing:1px">DIRECTIVE DE SÉCURITÉ</div>
-  <div style="text-align:center;font:12px Arial,sans-serif;color:#555;margin-bottom:12px">Référence : ${esc(S.ref)} · Émise le ${new Date().toLocaleDateString('fr-FR')}</div>
+  <div style="text-align:center;font:12px Arial,sans-serif;color:#555;margin-bottom:12px">Référence : ${esc(S.ref)} · Émise le ${new Date().toLocaleDateString('fr-FR')}</div>${d.marks.length?`<div class="mk">${d.marks.map(esc).join(' · ')}</div>`:''}${d.warn?`<div class="mk wn">${esc(d.warn).replace(/\n/g,'<br>')}</div>`:''}
   <table>${d.rows.map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1]).replace(/\n/g,'<br>')}</td></tr>`).join('')}</table>
   <h2>1 · Objet</h2><p>${esc(d.obj)}</p>
   <h2>2 · Mesures de sécurité obligatoires</h2>`;
@@ -336,21 +438,21 @@ function render(){
   d.arts.forEach(a=>{h+=`<div class="sub">${a.cn}</div>`+a.items.map(i=>`<p class="art"><b>Art. ${i.n} — ${esc(i.t)}.</b> ${esc(i.x)}</p>`).join('')});
   h+=`<div class="gen"><h2>3 · Dispositions générales</h2>`+d.gen.map((g,i)=>`<p class="art"><b>3.${i+1}</b> ${g}</p>`).join('')+'</div>';
   if(d.extra)h+=`<h2>4 · Instructions complémentaires</h2><p>${esc(d.extra).replace(/\n/g,'<br>')}</p>`;
-  h+=`<div class="eng"><b>ENGAGEMENT DU DESTINATAIRE.</b> En apposant sa signature ci-dessous, ${esc(val('prop','[Propriétaire]'))} s'engage à respecter l'intégralité de la présente directive ainsi que les ordres donnés par les agents du SASS pendant toute la durée de la visite. Cette signature est <b>irrévocable</b> : elle ne peut être ni annulée, ni retirée, ni contestée après avoir été apposée.</div>
-  <div class="sig"><div>Pour le SASS — accord et signature<br><small>${esc(sgs())}</small></div><div>Lu, approuvé et accepté — le destinataire<br><small>${esc(val('prop','[Propriétaire]'))} · Nom, qualité, date et signature</small></div></div>
+  h+=`<div class="eng"><b>ENGAGEMENT DU DESTINATAIRE.</b> En apposant sa signature ci-dessous, ${esc(rcp())} s'engage à respecter l'intégralité de la présente directive ainsi que les ordres donnés par les agents du SASS pendant toute la durée de la visite. Cette signature est <b>irrévocable</b> : elle ne peut être ni annulée, ni retirée, ni contestée après avoir été apposée.</div>
+  <div class="sig"><div>Pour le SASS — accord et signature<br><small>${esc(sgs())}</small></div><div>Lu, approuvé et accepté — le destinataire<br><small>${esc(rcp())} · Date et signature</small></div></div>
   <div class="ft">${d.L[1]} — Document destiné exclusivement à son destinataire. Toute reproduction ou divulgation non autorisée est interdite.<br>San Andreas Secret Service · ${esc(S.ref)}</div>`;
-  $('doc').innerHTML=h.replace(/\[([^\]<]+)\]/g,'<mark class="ph">[$1]</mark>');save();chk();
+  $('doc').innerHTML=h.replace(/\[([^\]<]+)\]/g,'<mark class="ph">[$1]</mark>');save();chk();stepsUI();$('pdfn').placeholder='Auto : '+fname();$('pr').title='Fichier proposé : '+fname()+'.pdf';dm();
   $('cnt').textContent=S.sel.size+' / '+M.length+' sélectionnées';
 }
 function toText(){
   const d=build(),l=[];
-  l.push(`[${d.L[1]}]`,'SAN ANDREAS SECRET SERVICE','DIRECTIVE DE SÉCURITÉ — '+S.ref,'');
+  l.push(`[${d.L[1]}]`,'SAN ANDREAS SECRET SERVICE','DIRECTIVE DE SÉCURITÉ — '+S.ref);if(d.marks.length)l.push(d.marks.join(' · '));if(d.warn)l.push(d.warn);l.push('');
   d.rows.forEach(r=>l.push(`${r[0]} : ${r[1]}`));
   l.push('','OBJET',d.obj,'','MESURES DE SÉCURITÉ OBLIGATOIRES');
   d.arts.forEach(a=>{l.push('',`— ${a.cn.toUpperCase()} —`);a.items.forEach(i=>l.push(`Art. ${i.n} — ${i.t}. ${i.x}`))});
   if($('tgg').checked){l.push('','DISPOSITIONS GÉNÉRALES');d.gen.forEach((g,i)=>l.push(`3.${i+1} ${g}`))}
   if(d.extra)l.push('','INSTRUCTIONS COMPLÉMENTAIRES',d.extra);
-  if($('tga').checked)l.push('','ENGAGEMENT DU DESTINATAIRE','En signant, '+val('prop','[Propriétaire]')+' s\'engage à respecter la présente directive et les ordres des agents du SASS pendant toute la visite. Cette signature est irrévocable : elle ne peut être ni annulée, ni retirée, ni contestée.','Accord et signature SASS : '+sgs());
+  if($('tga').checked)l.push('','ENGAGEMENT DU DESTINATAIRE','En signant, '+rcp()+' s\'engage à respecter la présente directive et les ordres des agents du SASS pendant toute la visite. Cette signature est irrévocable : elle ne peut être ni annulée, ni retirée, ni contestée.','Accord et signature SASS : '+sgs());
   l.push('','Merci de confirmer la réception de cette directive.',`— ${val('agent','[Agent]')}, SASS`);
   return l.join('\n');
 }
@@ -358,7 +460,7 @@ function toText(){
 /* ---------- actions ---------- */
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2200)}
 async function copy(){try{await navigator.clipboard.writeText(toText());toast('Directive copiée ✔')}catch(e){toast('Copie impossible')}}
-function download(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([toText()],{type:'text/plain;charset=utf-8'}));a.download=S.ref+'.txt';a.click()}
+function download(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([toText()],{type:'text/plain;charset=utf-8'}));a.download=fname()+'.txt';a.click()}
 async function send(){
   const wh=$('wh').value.trim();
   if(!/^https:\/\/(discord|discordapp)\.com\/api\/webhooks\//.test(wh))return toast('Webhook Discord invalide');
@@ -368,7 +470,7 @@ async function send(){
   const d=build(),id=$('did').value.trim(),txt=$('fmt').value=='short'?d.rows.slice(0,6).map(r=>r[0]+' : '+r[1]).join('\n')+'\nMesures : '+d.arts.flatMap(a=>a.items.map(i=>i.t)).join(', '):toText();
   const body={content:/^\d{15,22}$/.test(id)?`<@${id}> Nouvelle directive de sécurité du SASS.`:'Nouvelle directive de sécurité du SASS.',
    embeds:[{title:`🛡️ Directive de sécurité — ${S.ref}`,description:'```\n'+txt.slice(0,3900)+'\n```',color:parseInt(d.L[2].slice(1),16),footer:{text:`SASS · ${d.L[1]} · Niveau ${S.lvl}`},timestamp:new Date().toISOString()}]};
-  try{const r=await fetch(wh,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(r.ok&&DB)cloudSave({status:'envoyee',sentAt:firebase.firestore.FieldValue.serverTimestamp()});toast(r.ok?'Directive envoyée ✔':'Échec de l\'envoi ('+r.status+')')}catch(e){toast('Erreur réseau')}
+  try{const r=await fetch(wh,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(r.ok&&DB)cloudSave({status:'envoyee',sentAt:TS()}).then(()=>view(2));toast(r.ok?'Directive envoyée ✔':'Échec de l\'envoi ('+r.status+')')}catch(e){toast('Erreur réseau')}
 }
 
 /* ---------- events ---------- */
@@ -400,7 +502,22 @@ $('pl').onclick=e=>{const d=e.target.closest('[data-del]'),r=e.target.closest('[
 $('addp').onclick=()=>{addP();renderP();render()};
 $('addc').onclick=()=>{const t=$('cn').value.trim(),x=$('ct').value.trim();if(!t||!x)return toast('Titre et texte requis');const id='c'+Date.now();M.push([id,'perso',t,99,x]);S.sel.add(id);$('cn').value=$('ct').value='';renderMeas();render()};
 $('q').addEventListener('input',renderMeas);
-document.querySelectorAll('.card h2').forEach(h=>h.onclick=()=>h.parentNode.classList.toggle('col'));
+/* assistant par étapes + vues */
+const STP=[['Protégés','Qui est protégé ? Ajoutez une ou plusieurs personnes, puis choisissez le niveau de protection (ou un scénario rapide).'],['Lieu & contacts','Où, quand et pour qui ? Indiquez le lieu, les horaires, le destinataire et l\'agent responsable.'],['Mesures','Choisissez les mesures à imposer. Les recommandations sont déjà cochées selon le niveau et le type de lieu.'],['Envoi','Personnalisez le document, vérifiez l\'aperçu, puis envoyez-le au propriétaire (il est enregistré automatiquement).']];
+let CUR=1;
+const MAPS={'M':4,'C':4,'⚡':1,'1':1,'2':1,'3':2,'4':2,'5':3,'6':4,'7':4};
+document.querySelectorAll('.form .card').forEach(c=>{const h=c.querySelector('h2');c.dataset.st=MAPS[h.textContent.trim()[0]]||1;h.innerHTML=h.innerHTML.replace(/^\d · /,'')});
+function stepsUI(){
+  const ok=[S.pp.some(p=>p.n.trim()),['lieu','prop','date','arr','agent'].every(i=>$(i).value.trim()),S.sel.size>0,false];
+  $('steps').innerHTML=STP.map((t,i)=>`<button type="button" data-n="${i+1}" class="${CUR==i+1?'on':''} ${ok[i]?'ok':''}">${ok[i]?'✔':i+1} ${t[0]}</button>`).join('');
+}
+function step(n){CUR=Math.max(1,Math.min(4,n));document.querySelector('.form').dataset.s=CUR;$('sh').textContent=STP[CUR-1][1];$('prv').style.visibility=CUR==1?'hidden':'visible';$('nxt').textContent=CUR==4?'☁️ Enregistrer la directive':'Suivant →';stepsUI();scrollTo(0,0)}
+function view(v){document.body.classList.toggle('v2',v==2);$('n1').classList.toggle('on',v==1);$('n2').classList.toggle('on',v==2);scrollTo(0,0)}
+$('steps').onclick=e=>{const b=e.target.closest('[data-n]');if(b)step(+b.dataset.n)};
+$('prv').onclick=()=>step(CUR-1);
+$('nxt').onclick=async()=>{if(CUR<4)step(CUR+1);else if(await cloudSave())toast('Directive enregistrée ☁️')};
+$('n1').onclick=()=>view(1);$('n2').onclick=()=>view(2);
+$('newd').onclick=()=>{if(!$('lieu').value.trim()||confirm('Abandonner la directive en cours et en créer une nouvelle ?')){try{localStorage.removeItem('sass_dir_draft')}catch(e){}location.reload()}};
 function tab(p){document.body.classList.toggle('vp',!!p);$('t1').classList.toggle('on',!p);$('t2').classList.toggle('on',!!p);scrollTo(0,0)}
 $('t1').onclick=()=>tab(0);$('t2').onclick=()=>tab(1);
 /* brouillon */
@@ -412,7 +529,6 @@ function load(){try{return apply(JSON.parse(localStorage.getItem('sass_dir_draft
 $('ex').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(snap())],{type:'application/json'}));a.download=S.ref+'.json';a.click()};
 $('imb').onclick=()=>$('im').click();
 $('im').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(apply(d)){setLvl(S.lvl,false);renderP();renderMeas();render();toast('Brouillon importé ✔')}else toast('Fichier invalide')}catch(x){toast('Fichier invalide')}e.target.value=''};
-$('rs').onclick=()=>{if(confirm('Réinitialiser le formulaire ?')){try{localStorage.removeItem('sass_dir_draft')}catch(e){}location.reload()}};
 /* checklist */
 function chk(){
   const m=[];
@@ -421,7 +537,7 @@ function chk(){
   const tot=6;
   $('chk').innerHTML=`<div class="bar2"><i style="width:${(tot-m.length)/tot*100}%"></i></div><div class="row">${m.length?'<span style="color:var(--mu)">À compléter :</span>'+m.map(x=>`<button type="button" class="chip" data-f="${x[0]}">${x[1]}</button>`).join(''):'<span style="color:var(--ok)">✔ Directive complète, prête à envoyer</span>'}</div>`;
 }
-$('chk').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;const f=b.dataset.f,el=f=='pp'?document.querySelector('#pl input[data-k=n]'):$(f);if(!el)return;if(innerWidth<=980)tab(0);const c=el.closest('.card');if(c)c.classList.remove('col');el.scrollIntoView({block:'center',behavior:'smooth'});el.focus()};
+$('chk').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;const f=b.dataset.f,el=f=='pp'?document.querySelector('#pl input[data-k=n]'):$(f);if(!el)return;if(innerWidth<=980)tab(0);const c=el.closest('.card');if(c)step(+c.dataset.st);el.scrollIntoView({block:'center',behavior:'smooth'});el.focus()};
 /* scénarios */
 const SC={'🏛️ Visite officielle':['bureau',2,[]],'🍽️ Dîner / réception':['resto',2,['liste','fermeture']],'🎤 Conférence de presse':['ouvert',3,['presse','photo']],'🕶️ Déplacement discret':['prive',1,['itin']],'🏟️ Événement public':['stade',3,['fouillev','helico']]};
 $('scn').innerHTML=Object.keys(SC).map(k=>`<button class="btn s" type="button">${k}</button>`).join('');
@@ -445,24 +561,30 @@ function fbInit(cfg){
 async function cloudSave(extra={}){
   if(!DB){toast('Non connecté au cloud');return false}
   const cur=CL.find(x=>x.ref==S.ref);
-  const o=Object.assign({ref:S.ref,lieu:val('lieu',''),date:$('date').value,arr:$('arr').value,prop:val('prop',''),agent:val('agent',''),lvl:S.lvl,nb:S.pp.length,data:JSON.stringify(snap()),updatedAt:TS()},cur?{}:{status:'brouillon',createdAt:TS()},extra);
+  const o=Object.assign({ref:S.ref,lieu:val('lieu',''),date:$('date').value,arr:$('arr').value,prop:val('prop',''),agent:val('agent',''),lvl:S.lvl,nb:S.pp.length,pr:S.pp.map(p=>p.h?p.c:(p.n||p.c)).join(', '),data:JSON.stringify(snap()),updatedAt:TS()},cur?{}:{status:'brouillon',createdAt:TS()},extra);
   try{await COL().doc(S.ref).set(o,{merge:true});return true}catch(e){toast('Échec cloud : '+(e.code||e.message));return false}
 }
+let FILT='';
+const tsf=t=>t&&t.toDate?t.toDate().toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+const isLate=x=>x.status=='envoyee'&&x.date&&x.date<=new Date().toISOString().slice(0,10);
 function renderC(){
-  const f=$('cf').value,today=new Date().toISOString().slice(0,10),a=CL.filter(x=>!f||x.status==f);
-  const em=(t,c)=>`<em style="font-style:normal;font-size:11px;border:1px solid ${c};color:${c};border-radius:4px;padding:0 6px">${t}</em>`;
-  $('clist').innerHTML=a.length?a.map(x=>{const st=ST[x.status]||ST.brouillon,late=x.status=='envoyee'&&x.date&&x.date<=today,r=esc(x.ref);
-    return `<div class="hi" style="flex-wrap:wrap"><span><b>${esc(x.lieu||'Sans lieu')}</b> <small>· ${esc(x.date||'')} ${esc(x.arr||'')}</small><br><small>${r} · N${x.lvl} · ${x.nb} pers. · ${esc(x.agent||'—')}${x.prop?' → '+esc(x.prop):''}</small><br>${em(st[0],st[1])}${late?' '+em('⚠ sans accusé','#e5484d'):''}</span>
-    <div class="row" style="width:100%"><button class="btn s" data-co="${r}" type="button">Ouvrir</button><button class="btn s" data-cd="${r}" type="button">Dupliquer</button>${x.status=='envoyee'?`<button class="btn s" data-ck="${r}" type="button">✔ Accusé</button>`:''}${x.status!='annulee'?`<button class="btn s" data-cx="${r}" type="button">Annuler</button>`:''}<button class="x" data-cr="${r}" type="button">✕</button></div></div>`}).join(''):'<small style="color:var(--mu)">Aucune directive.</small>';
+  const q=($('dq').value||'').toLowerCase(),n=k=>CL.filter(x=>k=='late'?isLate(x):x.status==k).length;
+  const chips=[['','Toutes',CL.length],['brouillon','Brouillons',n('brouillon')],['envoyee','Envoyées',n('envoyee')],['accusee','Accusées',n('accusee')],['late','⚠ Sans accusé',n('late')]];
+  $('stats').innerHTML=chips.map(c=>`<button type="button" data-f="${c[0]}" class="${FILT==c[0]?'on':''}"><b>${c[2]}</b>${c[1]}</button>`).join('');
+  $('nc').textContent=CL.length;
+  const a=CL.filter(x=>(!FILT||(FILT=='late'?isLate(x):x.status==FILT))&&(!q||[x.lieu,x.agent,x.prop,x.pr,x.ref].join(' ').toLowerCase().includes(q)));
+  $('clist').innerHTML=a.length?a.map(x=>{const st=ST[x.status]||ST.brouillon,r=esc(x.ref),t=tsf(x.ackAt)||tsf(x.sentAt)||tsf(x.updatedAt);
+    return `<div class="dc" style="--c:${st[1]}"><h3>${esc(x.lieu||'Sans lieu')}</h3><small>📅 ${esc(x.date||'—')} ${esc(x.arr||'')} · Niveau ${x.lvl}</small><small>🛡️ ${esc(x.pr||x.nb+' pers.')}</small><small>👤 ${esc(x.agent||'—')}${x.prop?' → '+esc(x.prop):''}</small><small>${r}${t?' · '+t:''}</small><div><em class="bdg" style="color:${st[1]}">${st[0]}</em>${isLate(x)?' <em class="bdg" style="color:var(--red)">⚠ sans accusé</em>':''}</div>
+    <div class="row"><button class="btn" data-co="${r}" type="button">Ouvrir</button><button class="btn s" data-cd="${r}" type="button">Dupliquer</button>${x.status=='envoyee'?`<button class="btn s" data-ck="${r}" type="button">✔ Accusé</button>`:''}${x.status!='annulee'?`<button class="btn s" data-cx="${r}" type="button">Annuler</button>`:''}<button class="x" data-cr="${r}" type="button">✕</button></div></div>`}).join(''):`<p class="mut" style="grid-column:1/-1">${CL.length?'Aucun résultat.':'Aucune directive enregistrée pour le moment.'}</p>`;
   const dl=k=>[...new Set(CL.map(h=>h[k]).filter(Boolean))].map(v=>`<option value="${esc(v)}">`).join('');$('dp').innerHTML=dl('prop');$('da').innerHTML=dl('agent');
 }
-$('cf').onchange=renderC;
-$('cbtn').onclick=async()=>{if(await cloudSave())toast('Enregistré dans le cloud ☁️')};
+$('stats').onclick=e=>{const b=e.target.closest('[data-f]');if(b){FILT=b.dataset.f;renderC()}};
+$('dq').oninput=renderC;
 $('clist').onclick=async e=>{
   const g=k=>{const b=e.target.closest('['+k+']');return b&&b.getAttribute(k)};
   const o=g('data-co'),d=g('data-cd'),k=g('data-ck'),x=g('data-cx'),r=g('data-cr');
   try{
-    if(o||d){const it=CL.find(c=>c.ref==(o||d));if(!it||!apply(JSON.parse(it.data)))return toast('Chargement impossible');if(o)S.ref=it.ref;else genRef();setLvl(S.lvl,false);renderP();renderMeas();render();toast(o?'Directive ouverte ✔':'Copie créée ✔');if(innerWidth<=980)tab(1)}
+    if(o||d){const it=CL.find(c=>c.ref==(o||d));if(!it||!apply(JSON.parse(it.data)))return toast('Chargement impossible');if(o)S.ref=it.ref;else genRef();setLvl(S.lvl,false);renderP();renderMeas();render();toast(o?'Directive ouverte ✔':'Copie créée ✔');view(1);step(1);if(innerWidth<=980)tab(0)}
     else if(k)await COL().doc(k).update({status:'accusee',ackAt:TS()});
     else if(x)await COL().doc(x).update({status:'annulee'});
     else if(r&&confirm('Supprimer définitivement cette directive ?'))await COL().doc(r).delete();
@@ -471,6 +593,7 @@ $('clist').onclick=async e=>{
 genRef();
 if(!load()){addP();setLvl(2)}else{setLvl(S.lvl,false);renderP();renderMeas();render()}
 fbInit(FIREBASE_CONFIG);
+step(1);renderC();
 </script>
 </body>
 </html>
